@@ -1,0 +1,91 @@
+<SCENE_ANIMATION_NARRATION_PLAN>
+
+[ANIMATION_STRATEGY]
+1. **Pedagogical Animation Plan:**
+    - For this scene, we structure the animation in three clear sub-sections, each dedicated to one type of triangle. Each sub-section uses a VGroup that couples a triangle shape with its descriptive label. The following details the sequence and rationale for each animation:
+    
+    • Parent VGroup Transitions:
+        - We create three VGroups: "equilateral_group", "isosceles_group", and "scalene_group". Each VGroup is animated in sequence from left to right.
+        - The equilateral_group is positioned using .to_edge(LEFT, buff=0.5); the isosceles_group is positioned with next_to(equilateral_group, RIGHT, buff=0.3); the scalene_group is placed via next_to(isosceles_group, RIGHT, buff=0.3) ensuring that each group remains within the safe margin (0.5 units from the scene’s sides) and that the minimum spacing (0.3 units) is enforced.
+        - Pedagogical Rationale: By grouping the triangle with its label and spacing them horizontally, the viewer is guided to compare properties visually from left to right. This separation in layout reinforces the differences among triangle types.
+
+    • Element Animations within VGroups and for Individual Mobjects:
+        - Title Animation:
+            • Use a Tex object for the title "Triangle Types". Position it at the top center using .to_edge(UP, buff=0.5).
+            • Animation: Write(title) with run_time=1.5.
+            • Pedagogical Purpose: This introduces the scene’s theme clearly and immediately, orienting the learner.
+        
+        - Equilateral Triangle (Sub-scene 1):
+            • Create an equilateral triangle using the default Triangle class.
+            • Label: A Tex object reading "Equilateral: All sides equal", placed below the triangle using .next_to(triangle, DOWN, buff=0.3).
+            • Grouping: Combine the triangle and label into a VGroup (equilateral_group) and position it on the left via .to_edge(LEFT, buff=0.5).
+            • Animations: Use Create(equilateral_triangle) and Write(equilateral_label) concurrently with run_time=1.5.
+            • Pedagogical Purpose: Introducing with a simple geometric shape, the animation visually emphasizes equality in side length, reinforcing the concept through immediate visual association.
+            • Transition Buffer: Wait(1) is then inserted to let the learner absorb this information.
+        
+        - Isosceles Triangle (Sub-scene 2):
+            • Construct this triangle using the Polygon class with two equal sides.
+            • Label: "Isosceles: Two sides equal" is created as a Tex object placed below the triangle.
+            • Grouping: Combine into isosceles_group, positioned using next_to(equilateral_group, RIGHT, buff=0.3).
+            • Animations: Use Create(isosceles_triangle) with Write(isosceles_label) concurrently with run_time=1.5.
+            • Pedagogical Purpose: The slight variation in side lengths, when compared side-by-side with the equilateral one, helps viewers notice subtle differences and understand the idea of “two sides equal.”
+            • Transition Buffer: Wait(1) is provided after the animation.
+        
+        - Scalene Triangle (Sub-scene 3):
+            • Construct a scalene triangle through the Polygon class ensuring all sides are different.
+            • Label: "Scalene: All sides different" appears as a Tex object positioned below the triangle.
+            • Grouping: Combine into scalene_group, positioned using next_to(isosceles_group, RIGHT, buff=0.3) and adjusted if needed to remain within the right safe margin (0.5 units).
+            • Animations: Use Create(scalene_triangle) and Write(scalene_label) concurrently with run_time=1.5.
+            • Pedagogical Purpose: Highlighting the distinct side lengths, this final animation consolidates the comparison among triangle types.
+            • Final Pause: Wait(2) is given for learners to review and assimilate the visual distinctions.
+    
+    - **Coordination and Synchronization:**
+        • Throughout, relative positioning methods (next_to, to_edge, shift) are used to enforce spatial coherence and guarantee that no element overlaps the safe area margins (0.5 units) or violates the minimum spacing (0.3 units).
+        • Each animation uses explicit run_time values and Wait() calls to establish a clear pace. For example, 1.5 seconds for writing and creating elements and 1–2 seconds pause after each sub-scene provide time for reflection.
+        • Pedagogical Rationale: By carefully timing each transition and synchronizing VGroup animations with the narration cues (described below), we ensure the viewer’s attention is maintained and each concept is given adequate processing time.
+
+2. **Scene Flow - Pedagogical Pacing and Clarity:**
+    - Overall Animation Sequence and Spatial Progression:
+        • The scene opens with a title at the top center, immediately signaling the topic ("Triangle Types").
+        • Next, the equilateral triangle VGroup appears on the left edge, establishing a baseline with clear geometric uniformity.
+        • Subsequently, the isosceles and scalene VGroups appear one by one to the right, each introduced after a brief pause to highlight differences in side lengths and aid comparison.
+        • The left-to-right ordering reinforces logical progression and visual hierarchy.
+    - Transition Buffers:
+        • Wait(1) after the equilateral and isosceles groups, and Wait(2) after the scalene group ensure that learners have dedicated periods to understand each triangle type before moving to the next.
+        • Pedagogical Reason: These transitions prevent cognitive overload, allowing time for the viewer to internalize each concept.
+    - Coordination of Narration and Animation:
+        • The narration is carefully synchronized with the animation timeline. For instance, as the equilateral triangle is drawn and its label is written, the narration explains its properties. Similarly, when transitioning to the isosceles and scalene triangles, the narration cues and pauses are aligned with the Wait() times.
+        • The narration includes explicit cues such as “Now, notice how…” or “Let’s examine…” to guide attention exactly when the animation brings key details into view.
+        • Pedagogical Impact: This synchronization ensures that visual and auditory information reinforces each other, maximizing engagement and retention.
+
+[NARRATION]
+- **Pedagogical Narration Script:**
+
+    [Start Title Animation, run_time=1.5]
+    "Welcome to Scene 2: Triangle Types. In this section, we explore how triangles are classified based on their side lengths. Notice the clear title up top, which introduces the topic and sets the stage for what’s to come."
+
+    [As the equilateral triangle appears with Create() and its label is written]
+    "Let’s begin with the equilateral triangle. Observe that all three sides are perfectly equal. This uniformity is one of the simplest and most symmetric properties in geometry, making it a natural starting point. Imagine a perfectly balanced three-legged stool, where each leg is exactly the same length—this is your equilateral triangle."
+
+    [Wait(1) as the animation pauses briefly]
+    "Take a moment to appreciate the symmetry here."
+
+    [As the isosceles triangle is drawn and its label appears next to the equilateral group]
+    "Next, we move to the isosceles triangle. Unlike the equilateral triangle, only two sides are equal here. Think of a traditional triangular roof, where perhaps the two sloping sides are the same, but the base differs. This subtle change in side-length equality highlights an important variation in triangle properties."
+
+    [Wait(1) to allow the learner to process the differences]
+    "Notice how the isosceles triangle stands out next to the equilateral one, drawing your attention to the variation in side lengths."
+
+    [As the scalene triangle appears, complete with its descriptive label]
+    "Finally, we come to the scalene triangle, where no two sides are the same length. This type encapsulates the idea of complete variability and asymmetry. Picture a uniquely shaped piece of modern art—each edge is distinct, and there’s no uniformity. This helps emphasize the broad diversity found even within simple geometric shapes."
+
+    [Wait(2) for final reflection]
+    "By comparing these three types side-by-side—the equilateral, isosceles, and scalene triangles—you can see how a simple change in side lengths creates distinct identities. As we continue, think about how these fundamental differences influence other properties, such as angles and areas. Building on what we’ve seen so far, our next discussion will delve deeper into these relationships."
+
+- **Narration Sync - Pedagogical Alignment:**
+    • The narration starts simultaneously with the title’s Write() animation, ensuring that viewers connect the spoken introduction with the visual title.
+    • As each triangle group (equilateral, isosceles, scalene) is animated onto the screen, the lecturer’s voice precisely describes its properties. The narration pauses during Wait() calls to allow a moment of reflection, aligning with the on-screen visual emphasis.
+    • Key phrases such as “Observe,” “Notice,” and “Think of” are timed to coincide with the creation of the shape and the appearance of its label. This synchronization directs attention where it is needed, reinforcing the learning points at optimal moments.
+    • The overall narration transitions smoothly between triangle types, connecting them in a coherent, step-by-step exploration that builds on previous concepts and preps the learner for the subsequent topics.
+
+</SCENE_ANIMATION_NARRATION_PLAN>

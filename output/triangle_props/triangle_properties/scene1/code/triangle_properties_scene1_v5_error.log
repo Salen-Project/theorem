@@ -1,0 +1,72 @@
+
+Error in attempt 0:
+╭─────────────────────────────── Traceback (most recent call last) ────────────────────────────────╮
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/manim/cli/render/commands.py:120  │
+│ in render                                                                                        │
+│                                                                                                  │
+│   117 │   │   │   try:                                                                           │
+│   118 │   │   │   │   with tempconfig({}):                                                       │
+│   119 │   │   │   │   │   scene = SceneClass()                                                   │
+│ ❱ 120 │   │   │   │   │   scene.render()                                                         │
+│   121 │   │   │   except Exception:                                                              │
+│   122 │   │   │   │   error_console.print_exception()                                            │
+│   123 │   │   │   │   sys.exit(1)                                                                │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/manim/scene/scene.py:229 in       │
+│ render                                                                                           │
+│                                                                                                  │
+│    226 │   │   """                                                                               │
+│    227 │   │   self.setup()                                                                      │
+│    228 │   │   try:                                                                              │
+│ ❱  229 │   │   │   self.construct()                                                              │
+│    230 │   │   except EndSceneEarlyException:                                                    │
+│    231 │   │   │   pass                                                                          │
+│    232 │   │   except RerunSceneException as e:                                                  │
+│                                                                                                  │
+│ /home/neo/dev/salen/theorem/output/triangle_props/triangle_properties/scene1/code/triangle_prope │
+│ rties_scene1_v5.py:69 in construct                                                               │
+│                                                                                                  │
+│    66 │   """                                                                                    │
+│    67 │   def construct(self):                                                                   │
+│    68 │   │   # Initialize speech service                                                        │
+│ ❱  69 │   │   self.set_speech_service(KokoroService())                                           │
+│    70 │   │                                                                                      │
+│    71 │   │   # Instantiate helper for reusable functions                                        │
+│    72 │   │   helper = Scene1_Helper(self)                                                       │
+│                                                                                                  │
+│ /home/neo/dev/salen/theorem/src/utils/kokoro_voiceover.py:28 in __init__                         │
+│                                                                                                  │
+│    25 │   │   │   │    speed: float = Config.KOKORO_DEFAULT_SPEED,                               │
+│    26 │   │   │   │    lang: str = Config.KOKORO_DEFAULT_LANG,                                   │
+│    27 │   │   │   │    **kwargs):                                                                │
+│ ❱  28 │   │   self.kokoro = Kokoro(model_path, voices_path)                                      │
+│    29 │   │   self.voice = voice                                                                 │
+│    30 │   │   self.speed = speed                                                                 │
+│    31 │   │   self.lang = lang                                                                   │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/kokoro_onnx/__init__.py:35 in     │
+│ __init__                                                                                         │
+│                                                                                                  │
+│    32 │   │   │   f"koko-onnx version {importlib.metadata.version('kokoro-onnx')} on {platform   │
+│    33 │   │   )                                                                                  │
+│    34 │   │   self.config = KoKoroConfig(model_path, voices_path, espeak_config)                 │
+│ ❱  35 │   │   self.config.validate()                                                             │
+│    36 │   │                                                                                      │
+│    37 │   │   # See list of providers https://github.com/microsoft/onnxruntime/issues/22101#is   │
+│    38 │   │   providers = ["CPUExecutionProvider"]                                               │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/kokoro_onnx/config.py:33 in       │
+│ validate                                                                                         │
+│                                                                                                  │
+│   30 │   │   │   │   "\nYou can download the voices file using the following command:"           │
+│   31 │   │   │   )                                                                               │
+│   32 │   │   │   error_msg += "\nwget https://github.com/thewh1teagle/kokoro-onnx/releases/do    │
+│ ❱ 33 │   │   │   raise FileNotFoundError(error_msg)                                              │
+│   34 │   │                                                                                       │
+│   35 │   │   if not Path(self.model_path).exists():                                              │
+│   36 │   │   │   error_msg = f"Model file not found at {self.model_path}"                        │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+FileNotFoundError: Voices file not found at models/voices.bin
+You can download the voices file using the following command:
+wget https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
+

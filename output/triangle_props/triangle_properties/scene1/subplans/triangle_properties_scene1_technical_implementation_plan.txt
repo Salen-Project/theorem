@@ -1,0 +1,89 @@
+<SCENE_TECHNICAL_IMPLEMENTATION_PLAN>
+0. **Dependencies**:
+    - **Manim API Version**: Latest stable release of Manim Community Edition.
+    - **Allowed Imports**: 
+          • from manim import *
+          • import numpy as np
+          • (Optional Plugin) "manim-mobject-labeler" - for advanced automatic label placement.
+          <!-- Plugin: manim-mobject-labeler - Useful for ensuring consistent relative positioning of text and geometric objects. -->
+    
+1. **Manim Object Selection & Configuration (Text and Shapes)**:
+    - Objects & Classes:
+          • Title: A Tex object for the scene title ("Intro Triangles") with a font size of 28.
+          • Triangle Shape: A Polygon object constructed from 3 vertices defined relative to ORIGIN to ensure central positioning.
+          • Vertex Labels: Three Tex objects ("A", "B", "C") for labeling each vertex. Font size recommended: 24.
+          • Side Labels: Three Tex objects ("side AB", "side BC", "side CA") placed at the midpoints of triangle sides. Font size recommended: 24.
+          • Angle Labels & Arcs: For each vertex an optional Arc (using the Arc class) paired with a Tex object (e.g., "∠A", "∠B", "∠C") to illustrate angle positions.
+    - Configuration & Parameters:
+          • All text objects use Tex for non-mathematical content.
+          • Ensure all objects’ bounding boxes begin at least 0.5 units away from any scene edge and no two objects have less than 0.3 units spacing (using methods like .next_to(buff=0.3) or proper shift).
+          • Use relative positioning: Methods include `.to_edge()`, `.next_to()`, `.get_midpoint()`, and `.shift()`.
+          • Explicit safe margins: Title is positioned with `.to_edge(UP, buff=0.5)`.
+          • For vertex labels, use the triangle’s vertex coordinates (accessed via triangle.get_vertices()) and place each with a direction (e.g., UP+LEFT, DOWN+RIGHT, UP+RIGHT) ensuring a buff of at least 0.3.
+          • Side labels are placed at the midpoints found via triangle.get_midpoint() then further repositioned using .next_to(midpoint, direction, buff=0.3).
+          • Angle labels and arcs should be positioned close (using .next_to() with buff=0.3) to their respective vertex while ensuring they do not exceed safe boundaries.
+    
+2. **VGroup Structure & Hierarchy**:
+    - Grouping Objects:
+          • Create a main VGroup (e.g., triangle_group) that holds the triangle polygon along with all labels and arcs for easy animation management.
+          • Separate VGroups for vertex labels (vertex_labels_group) and side/angle labels (labels_group) may be created.
+    - Hierarchical Structure:
+          • Parent VGroup holds all scene elements; each sub-group ensures internal spacing is kept at a minimum of 0.3 units between its child elements.
+    - Rationale: Grouping preserves logical and sequential animations (e.g., fading in the triangle first then sequentially writing labels).
+
+3. **Spatial Positioning Strategy**:
+    - Relative Positioning:
+          • All objects are positioned relative to ORIGIN or to other objects.
+          • Title: Positioned using .to_edge(UP, buff=0.5) ensures a safe margin from the top edge.
+          • Triangle: Drawn centrally making sure the farthest vertices are no closer than 0.5 units from scene boundaries.
+          • Vertex Labels: Positioned with .next_to(vertex, direction, buff=0.3) where each vertex is accessed from triangle.get_vertices().
+          • Side Labels: Positioned at each side's midpoint (using triangle.get_midpoint()) then nudged via .next_to() with a buff of 0.3.
+          • Angle Arcs & Labels: Created at each vertex with similar relative positioning to ensure that the arc and text remain within the safe area.
+    - Measures for Text Bounding Box Overflow:
+          • Use relative positioning and check each Tex object's bounding box to confirm it remains within the safe 0.5 unit margins.
+          • For multi-word labels (or in cases where text might expand), consider splitting into multiple lines to prevent overflow.
+          • Consistently use .next_to() with a minimum buff of 0.3 for all labels to maintain clear separation.
+          • Adjust font sizes (e.g., 28 for titles, 24 for labels) to ensure that text size does not cause bounding box expansion beyond allowed margins.
+
+4. **Animation Methods & Object Lifecycle Management**:
+    - Animation Sequences:
+          • Sub-scene 1 (Scene Title and Setup):
+                - Use Write(title) with run_time approximately 1 second.
+                - Follow with a Wait(1) for pause.
+          • Sub-scene 2 (Drawing the Central Triangle):
+                - Use Create(triangle, run_time=2) to animate the drawing of the polygon.
+                - Group the triangle into a VGroup if necessary.
+                - Follow with a Wait(0.5) after drawing.
+          • Sub-scene 3 (Labeling the Vertices):
+                - Animate each vertex label with Write(label) sequentially.
+                - Use Wait(0.3) between each label to allow visual separation.
+          • Sub-scene 4 (Labeling the Sides and Angles):
+                - For each side label, position using the midpoint with a buff of 0.3 and then animate using Write(side_label).
+                - For angle arcs & labels, animate with Create(angle_arc) and Write(angle_label) respectively.
+                - Insert Wait(0.3) between each animation, and a final Wait(1) after completing this stage.
+    - Transition Buffers:
+          • Explicit Wait() calls are used between each sub-scene to ensure smooth transitions and prevent clutter.
+    - Lifecycle:
+          • Each object is added via play commands then maintained in their groups until potentially being faded out or transitioned to a new scene.
+
+5. **Code Structure & Reusability**:
+    - Overall Structure:
+          • Begin with dependency imports followed by definitions for creating the triangle and label objects.
+          • Write modular functions, for example, create_triangle(), create_vertex_labels(), create_side_labels() and create_angle_elements(), that encapsulate repeated tasks of creation and positioning.
+          • All functions ensure that safe area margins (0.5 units) and minimum spacing (0.3 units) are enforced via relative methods.
+    - Inline Comments:
+          • Provide comments on each step detailing why a particular method (e.g., .next_to() vs .shift()) is used, referencing Manim’s documentation.
+          • Comments indicate safe margin enforcement and mention the usage of plugin features if the "manim-mobject-labeler" is used (e.g., "Using manim-mobject-labeler for automatic label positioning simplifies the relative placement logic.").
+    - Reusability:
+          • Modular functions allow code reuse in possible future scenes that involve geometric figures or similar layout constraints.
+          • Ensure all object creation respects the spatial constraints uniformly.
+    
+***Mandatory Safety Checks***:
+    - Safe Area Enforcement: 
+          • Validate that all objects (titles, triangles, vertex labels, side labels, arcs, and angle labels) are positioned at least 0.5 units away from scene edges.
+    - Minimum Spacing Validation:
+          • Confirm that .next_to() placements use a buff of at least 0.3 units, validating that no two objects’ bounding boxes overlap.
+    - Transition Buffers:
+          • Insert Wait() calls between each stage (e.g., Wait(1) after title, Wait(0.5) after triangle creation, and Wait(0.3) between label animations) to respect pacing and avoid visual clutter.
+          
+</SCENE_TECHNICAL_IMPLEMENTATION_PLAN>

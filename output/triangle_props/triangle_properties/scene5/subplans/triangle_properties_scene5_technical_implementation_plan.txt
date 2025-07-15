@@ -1,0 +1,76 @@
+<SCENE_TECHNICAL_IMPLEMENTATION_PLAN>
+0. **Dependencies**:
+    - **Manim API Version**: Target the latest stable release of Manim Community Edition.
+    - **Allowed Imports**: 
+         • From manim import necessary classes such as Scene, VGroup, Tex, MathTex, Polygon, Line, DashedLine, Create, Write, Transform, FadeIn, FadeOut, and Wait.
+         • If desired, a plugin such as "manim_slide" (version documented in its README) can be utilized to simplify slide-transition animations.
+    - **Plugin Declaration**:
+         • ### Plugin: manim_slide - Used for managing slide-like transitions and smooth object grouping transitions, ensuring clear animation sequencing.
+
+1. **Manim Object Selection & Configuration (Text and Shapes)**:
+    - **Triangle Construction**:
+         • For both panels, create non-equilateral triangles using Polygon to avoid the equilateral default.
+         • Example: triangle = Polygon(point1, point2, point3) with vertices determined relative to safe area boundaries.
+    - **Lines & Highlighting**:
+         • Left Panel: Use DashedLine (or Line with dash style) to highlight the base (colored BLUE) and height (colored RED).
+         • Ensure these lines use relative positioning (e.g., using .next_to() of triangle vertices) and a buff value of at least 0.3.
+    - **MathTex and Tex for Text**:
+         • For all mathematical expressions (area formulas, semi-perimeter), use MathTex. Example: MathTex(r"A = \frac{1}{2} b h") for the base-height method, MathTex(r"s = \frac{a+b+c}{2}") and MathTex(r"A = \sqrt{s(s-a)(s-b)(s-c)}") for Heron’s method.
+         • For titles/labels, use Tex. For instance, Tex("Base-Height Method") and Tex("Heron's Formula"). Set font sizes to 28 for titles and 24 for formulas/labels.
+         • Use \text{} within MathTex if including non-formula text.
+    - **Dimension & Spacing Considerations**:
+         • All objects must initially be placed such that their bounding boxes remain at least 0.5 units from the scene’s edges.
+         • Ensure at least a 0.3 unit spacing between any two objects using relative positioning methods.
+
+2. **VGroup Structure & Hierarchy**:
+    - **Grouping Overview**:
+         • Create two primary VGroups: left_panel for the base-height method and right_panel for Heron’s formula.
+         • Within each panel, further subgroup elements in smaller VGroups (e.g., triangle_group, formula_group, label_group) to manage their positions collectively.
+    - **Purpose of Grouping**:
+         • left_panel: Contains the triangle, the dashed base/height lines, the MathTex area formula, and an optional title label.
+         • right_panel: Contains a triangle with side annotations, MathTex for semi-perimeter calculation, full Heron’s formula, and its title.
+    - **Spacing Management**:
+         • Specify an internal buff of at least 0.3 units between grouped objects to avoid overlaps.
+         • Use VGroup's arrange() method with a buff parameter as needed.
+
+3. **Spatial Positioning Strategy**:
+    - **Safe Area Enforcement**:
+         • All objects and groups must be positioned relative to the scene’s ORIGIN using methods such as .to_edge(LEFT/RIGHT/UP/DOWN, buff=0.5) to ensure the 0.5 unit margin.
+    - **Panel Layout**:
+         • left_panel: Position relative to the left edge using .to_edge(LEFT, buff=0.5).
+         • right_panel: Position relative to the left_panel using .next_to(left_panel, RIGHT, buff=0.3), then adjust to ensure its right boundary is within a 0.5 unit margin from the scene edge.
+    - **Relative Positioning Within Panels**:
+         • For each object (e.g., triangle, texts), use .next_to() or .shift() relative to either a safe margin or other objects.
+         • Example: In the left_panel, position the MathTex formula with .next_to(triangle, DOWN, buff=0.3). Similarly, for Tex labels above the triangle use .next_to(triangle, UP, buff=0.3).
+    - **Safeguarding Text Bounding Boxes**:
+         • When adding longer text (if multi-line labels are used), apply adequate scaling or line breaks to ensure bounding boxes do not exceed the safe area.
+         • Validate that every Tex and MathTex object is at least 0.3 units away from the adjacent object's bounding box.
+    
+4. **Animation Methods & Object Lifecycle Management**:
+    - **Animation Sequences & Timing**:
+         • Use Create animations for drawing static shapes (triangles, dashed lines) with a run_time of 1.5–2 seconds.
+         • Employ Write animations for all text objects (MathTex and Tex), also using a run_time of 1.5–2 seconds.
+         • For transitions between formula steps in the right_panel use Transform or FadeIn to smoothly update formulas.
+         • Insert Wait(1) calls after major sub-scenes to allow the viewer to assimilate each step.
+    - **Object Appearance and Removal**:
+         • Sequentially animate each element: first the triangle, then the annotated lines, followed by the formula and titles.
+         • Once the panels have been fully displayed, utilize FadeOut (or ungrouped FadeOut calls on a VGroup containing texts) so that elements remove in an orderly fashion.
+    - **Risks Mitigation**:
+         • Ensure that every animation maintains relative positioning, keeping objects within the safe area and preserving the minimum spacing.
+
+5. **Code Structure & Reusability**:
+    - **Modular Function Design**:
+         • Define helper functions like create_triangle(panel, vertices, label_positions, colors) to build and position triangle elements.
+         • Create functions such as add_formula(panel, formula_str, direction, buff) to encapsulate text creation and positioning.
+    - **Code Sectioning**:
+         • Separate the code into clear sections: dependencies, definitions of objects and groups, spatial layout, animation sequences for Sub-scene 1 (left_panel) and Sub-scene 2 (right_panel), and final cleanup transitions.
+         • Include inline comments referencing Manim documentation and plugin documentation for clarity.
+    
+***Mandatory Safety Checks***:
+    - **Safe Area Enforcement**: 
+         • All objects (including text bounding boxes) are positioned using .to_edge(), .next_to(), or .shift() such that they remain within a 0.5 unit margin from the scene edges.
+    - **Minimum Spacing Validation**:
+         • Verify with each relative positioning (using buff values) that there is always at least a 0.3 unit gap between adjacent objects.
+    - **Transition Buffers**:
+         • Insert Wait() calls (e.g., Wait(1)) between animation sequences for visual clarity and pacing.
+</SCENE_TECHNICAL_IMPLEMENTATION_PLAN>

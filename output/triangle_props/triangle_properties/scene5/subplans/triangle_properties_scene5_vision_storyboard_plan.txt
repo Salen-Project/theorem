@@ -1,0 +1,64 @@
+<SCENE_VISION_STORYBOARD_PLAN>
+  [SCENE_VISION]
+  1.  **Scene Overview**:
+      - This scene, titled "Area Formulas," is dedicated to explaining how to compute the area of triangles using two methods: the base-height method and Heron’s formula. It reinforces earlier discussions on triangle properties by visually breaking down the steps needed for each formula.
+      - **Visual learning objectives for viewers:**
+          • Use two distinct panels (created as two VGroups) arranged side-by-side with a safe area margin of 0.5 units on all sides and a gap of 0.3 units between them.
+          • In the left panel, display a triangle (drawn with the Polygon class to represent a non-equilateral triangle if needed) with a highlighted base and height, along with a MathTex formula for area (i.e., A = ½ * base * height) and step-by-step annotations.
+          • In the right panel, illustrate the same (or another) triangle with side lengths marked, then visually progress through Heron’s formula steps using MathTex equations grouped in a VGroup.
+          • Emphasize the use of MathTex for all mathematical and equation displays and Tex for any supplementary text labels such as "Base-Height Method" or "Heron’s Formula."
+      - How Manim visuals & animations support learning:
+          • Use VGroup to group formula components and annotations within each panel, ensuring that object spacing is maintained at a minimum of 0.3 units away from each other and from the screen edges (0.5 unit safe area).
+          • Utilize animations such as Write, Create, and Transform to sequentially reveal parts of the area formula explanations, ensuring that the transitions allow viewers enough time to process each step.
+          • For clarity and consistency, define each panel as its own container, then position all elements relative to these containers using methods like .to_edge(), .next_to(), and .shift(), so that no absolute positions are hard-coded.
+      - Key concepts to emphasize visually:
+          • Clear identification of triangle components (base, height, sides) in each panel.
+          • Stepwise derivation of the area formulas using annotations created with MathTex.
+          • Distinction between the two methods by using distinct color schemes (e.g., BLUE for base-height and GREEN for Heron’s) without compromising safe margins and spacing.
+
+  [STORYBOARD]
+  1.  **Visual Flow & Pacing (Manim Animation Sequence):**
+      - The screen is split vertically into two panels:
+          • Create two VGroups named left_panel and right_panel, each representing a distinct method.
+          • Ensure both panels are positioned with a 0.5 unit margin from the scene edges. The panels are separated by a minimum gap of 0.3 units (using .next_to(right_panel, LEFT, buff=0.3) relative to left_panel).
+          • Both panels’ contents (triangle drawings, formulas, annotations) adhere to the 0.5 unit safe area and maintain at least 0.3 units spacing between any two objects.
+
+      - **Scene Pacing & Transitions:**
+          • Use Write and Create animations with a run_time of about 1.5 to 2 seconds for each main object (triangle, formula, key labels).
+          • Insert Wait() periods (approximately 1 second) between sub-scenes to build pacing and allow viewers to assimilate the represented concepts.
+          • Transition between each formula step using Transform or FadeIn animations with clear relative positioning adjustments (all using methods like .next_to or .shift relative to existing objects).
+
+      - **Sub-scene Breakdown:**
+
+          a. **Sub-Scene 1: Left Panel – Base-Height Method**
+              - **Visual Element:** 
+                  • Construct a triangle using the Polygon class to serve as a non-equilateral triangle. Within this triangle, highlight the base and height using dashed Line objects and color-coding (e.g., base in BLUE, height in RED).
+                  • Create a MathTex formula for the area: MathTex(r"A = \frac{1}{2} bh").
+              - **Animation Sequence:**
+                  1. Create a VGroup called left_panel and position it relative to the left side of the ORIGIN, ensuring it is at least 0.5 units from the left edge.
+                  2. Use Create animation to draw the triangle in left_panel. Ensure that the entire triangle fits within the safe area.
+                  3. Use Create to add dashed lines for the base and height. Position these lines relative to the triangle’s vertices using .next_to() methods to maintain a 0.3 unit gap from the triangle edges.
+                  4. Use Write to introduce the MathTex formula (A = ½ bh) below the triangle. The formula is grouped in a VGroup to tie the equation components together. Position using .next_to(triangle, DOWN, buff=0.3).
+                  5. Optionally add a Tex label above the formula stating "Base-Height Method" with a Write animation. Position relative to the triangle with .next_to(triangle, UP, buff=0.3). All placements ensure adherence to safe area margins.
+                  6. Call a Wait(1) to allow the viewer to absorb the panel before transitioning.
+
+          b. **Sub-Scene 2: Right Panel – Heron’s Formula**
+              - **Visual Element:** 
+                  • Construct a triangle (using Polygon if a non-equilateral triangle is needed) with all three sides labeled (e.g., a, b, c).
+                  • Display Heron’s formula: MathTex(r"A = \sqrt{s(s-a)(s-b)(s-c)}") and include an intermediary step to compute s = (a+b+c)/2.
+              - **Animation Sequence:**
+                  1. Create a VGroup called right_panel, positioned relative to the right side of the ORIGIN, ensuring a 0.5 unit safe area from the right edge, and attach it to the left_panel using .next_to() with a buff of 0.3 units.
+                  2. Use Create animation to draw the triangle and then add labels to each side. Ensure that the side labels (using Tex) are positioned near their respective sides with .next_to() and satisfy the 0.3 unit gap rule.
+                  3. Use Write to display the first step: computing the semi-perimeter, s, with MathTex(r"s = \frac{a+b+c}{2}"), positioned under the triangle using .next_to(triangle, DOWN, buff=0.3).
+                  4. After a Wait(1), transition to writing the full Heron’s formula (MathTex(r"A = \sqrt{s(s-a)(s-b)(s-c)}")). Use Transform or FadeIn on the MathTex object so that the viewer sees the connection between the semi-perimeter calculation and the final area expression.
+                  5. Optionally, add a Tex title "Heron's Formula" above the triangle, positioned with .next_to(triangle, UP, buff=0.3).
+                  6. Insert a Wait(1) before concluding the sub-scene.
+
+      - **Final Transition:**
+          • Once both panels have been fully presented, use a brief FadeOut on the annotation texts one-by-one (or group them in a VGroup and perform a FadeOut) to prepare for the next scene (as the narration continues seamlessly).
+          • Ensure that all fades, writes, and transitions keep all objects within the safe area margins (0.5 unit) and maintain the required 0.3 unit spacing between both panels and all individual components.
+
+      - **Additional Plugin Note:**
+          **Plugin Suggestion:** Consider using the "manim_slide" plugin if available, which can simplify the handling of slide-like transitions between sub-scenes, allowing smoother transformation animations and management of on-screen text elements while still enforcing spatial constraints.
+
+</SCENE_VISION_STORYBOARD_PLAN>

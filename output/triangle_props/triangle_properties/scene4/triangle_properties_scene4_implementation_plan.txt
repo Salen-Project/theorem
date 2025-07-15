@@ -1,0 +1,242 @@
+# Scene 4 Implementation Plan
+
+<SCENE_VISION_STORYBOARD_PLAN>
+[SCENE_VISION]
+1.  Scene Overview:
+    - This scene, titled "Angle Sum", demonstrates the triangle angle sum theorem by visually dissecting a triangle’s interior angles and rearranging them to form a straight line representing 180°. It connects prior discussions on angles and deepens the understanding of triangle properties.
+    - Visual learning objectives for viewers: 
+         • Use a visually distinct triangle (created via Manim’s Polygon class to allow a non-equilateral shape) centrally placed within the safe area margins.
+         • Highlight the three interior angles using arcs (created with Manim’s Arc class) and label them using MathTex (with labels such as A, B, C or corresponding angle symbols).
+         • Dynamically rearrange these angle sectors (using Manim’s Transform or MoveToTarget animations) so that they line up to form a straight line, clearly indicating that their sum equals 180°.
+         • Use VGroup to bundle angle arcs and annotations for coordinated movement, ensuring every grouped element remains at least 0.3 units apart from others.
+    - How Manim visuals & animations support learning:
+         • MathTex will be used for the 180° expression and any necessary mathematical notation.
+         • Tex will be used for titles and minimal narrative labels.
+         • Polygon, Arc, and VGroup will be used to construct the triangle and its movable parts.
+         • All objects are placed relative to ORIGIN and other scene elements (via .move_to(ORIGIN), .next_to(), and .shift() methods), ensuring strict adherence to safe area margins (0.5 units) and a minimum spacing of 0.3 units.
+    - Key concepts are emphasized by gradually building from the whole triangle to its individual angle parts and finally demonstrating their sum as a straight line. Every visual is arranged with respect for the spatial constraints to avoid any overlaps.
+    
+[STORYBOARD]
+1.  Visual Flow & Pacing (Manim Animation Sequence):
+    - Begin with a brief title introduction using Tex.
+         • Animation: Create the title with FadeIn (run_time=1.5) positioned relative to the top-center safe margin (using .to_edge(UP, buff=0.5)). Ensure there is a 0.3 unit gap from any subsequent elements.
+         • Title text: Tex("Angle Sum Theorem") is aligned in the top-center.
+         • Buffer: Wait(1) after the title fades in.
+
+2.  Sub-scene 1 – Displaying the Triangle:
+    - Visual Element: A triangle built using the Polygon class (to allow non-equilateral shaping) is centered in the scene. Its vertices are determined relative to ORIGIN ensuring each point remains within 0.5 units from scene edges.
+         • Animation: Use Create(animation, run_time=2) to draw the triangle.
+         • Positioning: Triangle is moved to ORIGIN (.move_to(ORIGIN)). Ensure a 0.3 unit spacing from the title (by placing it at least 0.3 units below the title text).
+    - Add angle markers:
+         • For each vertex (say, vertices A, B, and C), create an Arc (using Arc() with appropriate radius, e.g., 0.4) to represent the interior angle.
+         • Use MathTex for labeling each arc (e.g., MathTex(r"\alpha"), MathTex(r"\beta"), MathTex(r"\gamma")).
+         • Position each MathTex label using .next_to() method relative to its corresponding arc while maintaining a minimum gap of 0.3 units.
+         • Animation: Animate the arcs and labels with FadeIn (run_time=1) sequentially.
+         • Buffer: Wait(0.5) after all angle markers are in place.
+
+3.  Sub-scene 2 – Dissecting and Rearranging Angles:
+    - Visual Element: Copy VGroup of the three arc segments representing the angles.
+         • Instruction: Group arcs into a VGroup (each separated by at least 0.3 units).
+         • Plugin Suggestion: **Plugin Suggestion:** Consider using a plugin such as manim_sliding_mobject for smooth sliding transitions if available.
+    - Animation Sequence:
+         • Create a transformation animation (Transform or MoveToTarget) for the first arc: smoothly move the arc to the left of ORIGIN ensuring at least a 0.3 unit gap from the triangle.
+         • Similarly, animate the second and third arcs: position one directly adjacent (next_to with RIGHT) to the first arc and the third next to the second arc using .next_to() ensuring that together they form a horizontal line.
+         • As they line up, introduce a MathTex equation below or above the line reading MathTex(r"180^\circ") positioned via .next_to() the line with a 0.3 unit margin.
+         • Animation: Use Write for the MathTex and Transform animations for the arcs (each run_time around 1-1.5 seconds).
+         • Buffer: Wait(1) after the transformation completes to let viewers absorb the visual.
+
+4.  Sub-scene 3 – Final Annotation and Emphasis:
+    - Visual Element: Highlight the assembled straight line of angles with a surrounding rectangle or a circumscription using Circumscribe.
+         • Animation: Use Circumscribe (run_time=1) to draw attention to the line.
+    - Add succinct concluding annotation:
+         • Use MathTex to display the final expression, for example: MathTex(r"\alpha+\beta+\gamma=180^\circ"). Place it below the rearranged angles using .next_to() while ensuring a 0.3 unit gap.
+         • Animation: Animate with Write (run_time=1.5).
+    - Buffer: Wait(1) to allow the learner to reflect on the theorem.
+
+5.  Final Transition:
+    - Fade out all transformed angle arcs, final annotation, and the triangle together using FadeOut, ensuring tags remain within safe area margins and all objects maintain the minimum spacing throughout the transition.
+    - Final wait (2 seconds) for scene conclusion.
+
+All placements use relative positioning (via .move_to(), .next_to(), .shift(), or .to_edge()) relative to ORIGIN, safe area margins (0.5 units), or other objects. Every object’s edge maintains a minimum gap of 0.3 units from any other element to ensure clarity.
+
+</SCENE_VISION_STORYBOARD_PLAN>
+
+<SCENE_TECHNICAL_IMPLEMENTATION_PLAN>
+0. **Dependencies**:
+    - **Manim API Version**: Target the latest stable Manim Community Edition release.
+    - **Allowed Imports**: Import from "manim" and "numpy". No external assets are used.
+    - **Plugin Use**: None required for this scene. (If advanced sliding transitions are desired, consider "manim_sliding_mobject", but for clarity we stick to built-in animations.)
+    
+1. **Manim Object Selection & Configuration (Text and Shapes)**:
+    - Title Text:
+        • Object: Tex("Angle Sum Theorem")
+        • Font Size: 28 (preset or scaled within Tex)
+        • Position: To be placed at the top-center using .to_edge(UP, buff=0.5); ensures a 0.3 unit gap from subsequent elements.
+        • Animation: Introduced using FadeIn with run_time=1.5.
+    - Triangle Representation:
+        • Object: Polygon
+            - Create a non-equilateral triangle by providing three distinct vertices.
+            - Vertices must be defined relative to ORIGIN and adjusted to guarantee a 0.5 unit safe margin from scene edges.
+        • Animation: Draw the triangle using Create with run_time=2.
+        • Position: Centered via .move_to(ORIGIN) and placed at least 0.3 units below the title.
+    - Angle Markers (Arcs & Labels):
+        • Objects for Angles:
+            - Three Arc objects, each with a radius (e.g., 0.4) to represent the interior angles.
+            - Labels: Three MathTex objects, e.g., MathTex(r"\alpha"), MathTex(r"\beta"), MathTex(r"\gamma").
+            - Each label is positioned with .next_to() its corresponding arc and buffered by at least 0.3 units.
+        • Animation: Introduce arcs and labels sequentially with FadeIn (run_time=1 per marker).
+        • Consideration: Use relative positioning so that no arc or text bounding box overflows the safe area.
+    - 180° Annotation:
+        • Object: MathTex(r"180^\circ")
+        • Position: Placed next to (or below/above) the rearranged angle-line with .next_to() ensuring a minimum 0.3 unit gap.
+        • Font Size: Recommended 24.
+        • Animation: Added with Write.
+    - Final Expression:
+        • Object: MathTex(r"\alpha+\beta+\gamma=180^\circ")
+        • Placement: Positioned relative to the assembled straight line using .next_to() with buff>=0.3.
+        • Animation: Run Write with run_time=1.5.
+
+2. **VGroup Structure & Hierarchy**:
+    - Groupings:
+        • triangle_group: VGroup containing the Polygon (triangle) and its associated arc markers.
+        • angle_arcs_group: VGroup holding the three Arc objects and their labels to enable coordinated movement.
+        • equation_group: VGroup for the assembled line of angles and the MathTex("180^\circ") annotation.
+    - Internal Grouping:
+        • Each VGroup is configured to maintain an internal spacing of at least 0.3 units between its constituent objects.
+        • This ensures that during transformations (Transform or MoveToTarget), elements do not overlap or exceed safe area margins.
+
+3. **Spatial Positioning Strategy**:
+    - General Rules:
+        • All objects use relative positioning. For instance, title placement is done using .to_edge(UP, buff=0.5) and the triangle is centered with .move_to(ORIGIN).
+        • All placements use methods like .next_to(), .shift(), and .align_to() where the buff parameter is set to 0.3 units (minimum spacing) from adjacent objects.
+        • Every object’s bounding box (including multi-line text) is checked to remain inside the safe area (at least 0.5 units from scene boundaries).
+    - Specific Examples:
+        • The triangle is placed at the ORIGIN but verified not to exceed 0.5 units near any edge using margin checks.
+        • The title’s bottom edge is at least 0.3 units from the triangle’s top.
+        • During the angle rearrangement, each arc is moved away from the triangle with a buffer of 0.3 units, forming a horizontal line centered below or above the triangle.
+    - Safety for Text Bounding Boxes:
+        • Incorporate checks with methods (such as get_bounding_box) to ensure that text (MathTex or Tex) does not overflow. If needed, reduce font size or break text into multiple lines.
+        • Use relative positioning to avoid overlap with already defined objects.
+
+4. **Animation Methods & Object Lifecycle Management**:
+    - Animation Sequences:
+        • Title Introduction: FadeIn(Tex("Angle Sum Theorem"), run_time=1.5) then Wait(1).
+        • Triangle Drawing: Create(Polygon(...), run_time=2); ensure triangle is positioned 0.3 units below the title.
+        • Angle Markers: For each vertex, FadeIn(Arc(...), run_time=1) and concurrently FadeIn(MathTex(...)) for labels; wait 0.5 seconds after all markers are in place.
+        • Dissecting & Rearrangement:
+            - Copy the angle_arcs_group into a new VGroup for transformation.
+            - Use Transform or MoveToTarget to slide the first arc to the left (relative to ORIGIN) with .next_to(triangle_group, direction=LEFT, buff=0.3).
+            - Subsequent arcs are arranged with .next_to() (RIGHT) and adjusted to form a seamless horizontal line.
+            - Simultaneously, Write(MathTex("180^\circ"), run_time=1) next to the arranged arcs.
+            - Wait 1 second after transformation.
+        • Final Annotation:
+            - Use Circumscribe on the rearranged VGroup (with run_time=1) to highlight the complete angle line.
+            - Then Write the final expression MathTex(r"\alpha+\beta+\gamma=180^\circ") positioned using .next_to() (with buff=0.3).
+            - Wait 1 second after the annotation.
+        • Final Transition:
+            - Use FadeOut for all objects (angle markers, triangle and annotation) ensuring all objects fade simultaneously and remain within safe area margins.
+            - End with Wait(2) seconds for scene conclusion.
+    
+5. **Code Structure & Reusability**:
+    - Modular Functions:
+        • Create functions such as create_triangle(), create_angle_marker(vertex), and arrange_angles() to encapsulate repeated patterns.
+        • Each function includes detailed inline comments explaining the rationale, referencing Manim’s documentation for classes like Polygon, Arc, VGroup, and the usage of position methods.
+    - Logical Sections:
+        • Section 0: Define dependencies and import statements.
+        • Section 1: Object definitions – title, triangle, arcs, labels, and final annotations.
+        • Section 2: Arrangement and grouping using VGroup for coordinated transformations.
+        • Section 3: Animation sequences in the main construct() method with clearly placed Wait() calls for transition buffers.
+    - Inline Comments:
+        • Each animation and positioning call is accompanied by a comment, e.g., "Positioning triangle 0.3 units below title ensuring safe margin" to ensure maintainability.
+
+***Mandatory Safety Checks***:
+    - Safe Area Enforcement: Every Manim object (Triangle, Arcs, Text) is initially placed relative to ORIGIN and aligned to safe margins using .to_edge() with buff=0.5.
+    - Minimum Spacing Validation: Utilize .next_to() with buff=0.3 to ensure that no two objects (including text bounding boxes) overlap.
+    - Transition Buffers: Insert explicit Wait() calls (e.g., Wait(1) or Wait(0.5)) between animation sequences to allow the viewer to process each step and ensure objects remain non-overlapping during transitions.
+    
+Diagrams/Sketches (Text-Based Example):
+    - Title: "Angle Sum Theorem" centered at the top edge (UP) with a 0.5 unit buffer.
+    - Triangle: Centered at ORIGIN; below the title with at least a 0.3 unit vertical gap.
+    - Angle Markers: Arcs at each vertex of the triangle.
+    - Rearranged Angles: A horizontal row aligned left-to-right, positioned such that:
+           [ Arc(\alpha) ] --0.3--> [ Arc(\beta) ] --0.3--> [ Arc(\gamma) ]
+      with the MathTex "180°" placed next to or below this horizontal line with a 0.3 unit gap.
+    - Final Expression: Below the rearranged line, ensuring another 0.3 unit gap.
+    
+This detailed plan outlines the spatially accurate, pedagogically informed Manim code structure for Scene 4 on the Triangle Angle Sum theorem while enforcing safe area margins and minimum spacing requirements.
+</SCENE_TECHNICAL_IMPLEMENTATION_PLAN>
+
+<SCENE_ANIMATION_NARRATION_PLAN>
+
+[ANIMATION_STRATEGY]
+1. **Pedagogical Animation Plan:**
+    - The scene begins with a title displayed at the top center. We use a FadeIn animation for the Tex("Angle Sum Theorem") object with run_time=1.5. This immediate introduction sets the learning context and captures attention while ensuring the title remains in the safe area (0.5 units from the top edge) and at least 0.3 units away from subsequent elements.
+    - Next, a non-equilateral triangle is drawn using the Polygon class. It is centered at ORIGIN, with its vertices carefully defined so that the triangle respects safe margins (0.5 units) and maintains a minimum spacing of 0.3 units from the title. A Create animation (run_time=2) is used so that the drawing process itself reinforces the geometric structure.
+    - For each vertex of the triangle, an Arc is created (with a radius of approximately 0.4 units) to highlight the interior angles. The corresponding labels (MathTex r"\alpha", r"\beta", r"\gamma") are positioned with .next_to() relative to each arc, ensuring a minimal gap (0.3 units). These markers appear with a FadeIn animation (run_time=1 per marker) in sequence. Pedagogically, this isolated focus on each angle reinforces the idea that the triangle can be decomposed into parts.
+    - Grouping these arcs and labels into a VGroup (angle_arcs_group) allows us to later animate them as a set. The VGroup separation is enforced by a spacing of 0.3 units between each element so that when they are transformed, they remain clearly distinct and within the safe area.
+    - In the next phase, we dissect and rearrange the angle arcs:
+         • We perform a Transform (or MoveToTarget) on the first arc, moving it to the left of ORIGIN with a buffer of 0.3 units away from the triangle.
+         • Then, we animate the second arc by positioning it immediately to the RIGHT of the first (using .next_to() with a buff of 0.3) and the third arc to the RIGHT of the second. They reform into a horizontal line.
+         • Simultaneously, a MathTex object reading "180^\circ" is introduced using Write (run_time=1). It is placed just above or below the horizontally aligned arcs (ensuring a minimal 0.3 unit gap) to visually represent their sum.
+         • Pedagogically, this rearrangement makes explicit the concept that the sum of the angles forms a straight line; the movement reinforces the idea of partitioning and reassembling a whole concept.
+    - Finally, the horizontal assembly is emphasized using a Circumscribe animation (run_time=1) that traces around the arranged group. Following that, a final MathTex expression r"\alpha+\beta+\gamma=180^\circ" is written (run_time=1.5) below the group with a 0.3 unit separation. This consolidation step reaffirms the theorem and allows the learner to pause and reflect.
+    - The scene wraps up by fading out all elements (triangle, arcs, labels, and text) simultaneously using FadeOut. A concluding Wait(2) ensures viewers have time to internalize the concept before moving to the next scene.
+
+    **Pedagogical Rationale for VGroup and Element Transitions:**
+      - Grouping using VGroup ensures that all angle markers move in a coordinated fashion, guiding the viewer’s eyes from the original triangle to their reassembled form.
+      - Each transformation (Shift and Transform) is timed (1–1.5 seconds each) to provide an easy-to-follow visual breakdown of the overall concept.
+      - The explicit use of Wait() instructions (e.g., Wait(1) after title introduction, Wait(0.5) after angle markers appear, and Wait(1) after the transformation) are pedagogically motivated to let the learner process each step.
+      - Keeping all elements within strict spatial margins (0.5 unit safe area and 0.3 unit minimum spacing) guarantees that no visual clutter or overlap distracts from the learning goals.
+
+2. **Scene Flow - Pedagogical Pacing and Clarity:**
+    - Overall, the animation sequence is divided into three main sub-sections:
+         • "Introduction and Triangle Setup": Title fades in, triangle is drawn, and angles are marked with corresponding labels. This phase orients the learner by connecting with previous discussions about angles.
+         • "Angle Dissection and Rearrangement": The arcs are extracted from the triangle and rearranged into a straight horizontal line, with the "180°" annotation appearing alongside. This is the core instructional segment where the triangle angle sum theorem is visually demonstrated.
+         • "Concept Reinforcement and Closure": A circumscription emphasizes the reassembled group and the final annotated equation reaffirms the theorem before all objects fade out.
+    - Spatial progression is carefully managed:
+         - Title is at the top center (maintaining a 0.5 unit margin). The triangle is centered below the title with a minimum 0.3 unit gap.
+         - The dissected elements are moved left and right of the triangle, ensuring they never come closer than 0.3 units to each other or other elements, preserving clarity.
+         - The final equation is positioned relative to the rearranged angles, also respecting the 0.3 unit spacing.
+    - Transition buffers (Wait() calls) are included after each major animation phase:
+         • A Wait(1) after the title FadeIn allows the viewer to register the scene title.
+         • A Wait(0.5) after the angle markers have appeared provides a reflective pause.
+         • A Wait(1) following the transformation ensures that the rearranged format is clearly observed before annotation is added.
+         • A final Wait(2) at the end allows for consolidation of the learning moment.
+    - Synchronization with narration is built in so that the spoken explanation corresponds directly with each animated transformation:
+         - Narration cues match the start and end of each animation (e.g., "Now, notice how we extract the angles..." as the transformation occurs).
+         - This coherence between narration and animation helps maximize viewer engagement and retention by emphasizing key teaching moments.
+
+[NARRATION]
+- **Pedagogical Narration Script:**
+    (0.0 sec, as the title fades in)
+    "Welcome to Scene 4, where we uncover one of the foundational properties of triangles: the angle sum theorem. Notice the title, 'Angle Sum Theorem,' which sets the stage for what is to come."
+    
+    (After title appears and a Wait(1))
+    "Here we see a carefully drawn triangle—for clarity, a non-equilateral form to emphasize that the theorem holds regardless of triangle type. Each corner is marked with a distinct arc, representing its interior angles. We label these as α, β, and γ."
+    
+    (As each arc and label fades in sequentially; use timing to correspond with each FadeIn animation)
+    "Look at how each angle is isolated. This segmentation allows us to focus on the role each plays in completing the triangle."
+    
+    (After a brief pause, immediately as the transformation begins)
+    "Now, let’s explore the magic behind these angles. Watch as we gently detach each arc from the triangle. Notice how the first angle slides neatly to the left, followed by the second and third aligning to form a straight line."
+    
+    (As the angles join to form a horizontal line, and the '180°' annotation is written)
+    "When you reposition these angles side by side, they align perfectly to form a straight line. And what is the measure of a straight line? Exactly 180 degrees! This reveals the connection between the internal angles of any triangle."
+    
+    (During the circumscription and final equation Write animation)
+    "To reinforce this key concept, we now highlight the complete arrangement. The final expression, written as α + β + γ = 180° shows that the sum of the interior angles of a triangle is always 180 degrees. This is a powerful insight that underpins much of triangle geometry."
+    
+    (As the scene prepares to fade out; during the final Wait(2))
+    "Take a moment to absorb this idea. Notice how each movement in the animation has led us logically to this conclusion. Building on our previous discussions about angles, we now see how those fundamentals come together in a triangle. Get ready, because in the next part, we'll apply this theorem to solve more complex problems."
+    
+- **Narration Sync - Pedagogical Alignment:**
+    - The narration is tightly synchronized with the animations:
+         • The initial greeting and title explanation are delivered as the title fades in.
+         • During the drawing of the triangle and the introduction of angle markers, the narration explains the importance of segmenting the triangle to understand its parts.
+         • As the transformation and rearrangement of angles begin, the narration guides the viewer to focus on the shifting arcs and the appearance of the "180°" label.
+         • The final narration is timed to coincide with the circumscription and display of the complete equation, ensuring that the learner grasps the full significance of the angle sum theorem.
+    - Each specific animation cue (e.g., FadeIn for arcs, Transform for moving arcs, Write for the "180°" and final equation) is preceded by a clear verbal explanation, ensuring that the viewer knows what to look for and why it matters.
+    - The strategic pauses (Wait() commands) built into the animation allow the narration to make slight pauses between explanations for deeper cognitive processing of the concept.
+
+</SCENE_ANIMATION_NARRATION_PLAN>
+

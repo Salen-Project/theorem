@@ -1,0 +1,69 @@
+<SCENE_VISION_STORYBOARD_PLAN>
+[SCENE_VISION]
+1.  **Scene Overview**:
+    - This introductory scene, "Intro Triangles," establishes the concept of a triangle by defining it as a closed three-sided polygon with three vertices and interior angles. It serves as the foundation for further exploration into triangle properties. The key takeaway is understanding that a triangle is formed by three line segments that meet at three vertices.
+    - **Visual learning objectives for viewers:** 
+        • Visualize a triangle using the Manim Polygon object (instead of the default Triangle class) so that we can clearly label each vertex, side, and angle.
+        • Use `Tex` to label vertices and sides, while keeping mathematical expressions (if any) with `MathTex` and wrapping non-mathematical text in `\text{}`.
+        • Ensure all objects (triangle, labels, arcs) are grouped via a `VGroup` when needed for consistent spacing and relative animations.
+    - How Manim visuals & animations support learning:
+        • The triangle is produced centrally using a `Polygon` object (constructed with three vertices defined relative to the ORIGIN), ensuring it lies entirely within the safe area margins (0.5 units from each scene edge).
+        • Label objects (`Tex` for vertices, sides, and angles) are positioned using relative positioning methods (e.g., `.next_to()`, `.align_to()`, and `.shift()`) with a minimum spacing of 0.3 units from one another.
+        • The scene uses smooth animations such as `Create`, `Write`, and `FadeIn` to draw attention sequentially to the triangle, its vertices, sides, and angles.
+        • A brief `Wait()` is included between animation sequences for pacing and clarity.
+    - Key concepts visually emphasized:
+        • The triangle's structure (three sides, three vertices, and three angles) is clearly outlined.
+        • Safe area margins (0.5 units from scene boundaries) and a minimum spacing of 0.3 units between all objects are strictly observed.
+        • Clear positioning relative to the ORIGIN and each object ensures that labels and arcs are distinct and non-overlapping.
+
+[STORYBOARD]
+1.  **Visual Flow & Pacing (Manim Animation Sequence)**:
+    - Overall Flow: Start with the scene title, then animate the creation of a triangle centrally placed, followed by sequential labeling of vertices, sides, and angles with relative spacing.
+    - Transition: Use short `Wait()` periods (e.g., Wait(0.5)) between each sub-scene for visual clarity.
+
+    **Sub-scene 1: Scene Title and Setup**
+        - Visual Element: A `Tex` object with the text "Intro Triangles" to serve as the scene title.
+        - Animation Sequence:
+            • Create the title using `Write(title)` where `title` is a `Tex` object.
+            • Position the title at the top center relative to the ORIGIN by using `.to_edge(UP, buff=0.5)` ensuring it remains within the 0.5 unit safe area margin.
+            • Wait(1) to allow the viewer to read the title.
+
+    **Sub-scene 2: Drawing the Central Triangle**
+        - Visual Element: A `Polygon` object representing the triangle.
+            • Create three vertices relative to the ORIGIN (e.g., define vertices such that the triangle is centered and large enough to allow space for labels).
+            • Ensure all vertices and edges lie within the safe area margins (0.5 units from the scene edge).
+        - Animation Sequence:
+            • Use `Create(triangle)` animation (run_time=2) to draw the triangle.
+            • Group the triangle in a `VGroup` if needed for future animations.
+            • Wait(0.5) after creation.
+
+    **Sub-scene 3: Labeling the Vertices**
+        - Visual Element: Three `Tex` objects for vertex labels "A", "B", and "C".
+        - Animation Sequence:
+            • For each vertex:
+                  - Use the `triangle.get_vertices()` method to refer to each vertex.
+                  - Place a vertex label using `.next_to(vertex, direction)` where the directions are chosen (e.g., UP+LEFT, DOWN+RIGHT, UP+RIGHT) ensuring a minimum spacing of 0.3 units from the triangle’s vertices.
+                  - Animate each with `Write(label)` ensuring they are added one by one with a Wait(0.3) between each.
+            • Ensure each label is within the safe area margins.
+        
+    **Sub-scene 4: Labeling the Sides and Angles**
+        - Visual Element: 
+             • For side labels: Create three `Tex` objects (e.g., "side AB", "side BC", "side CA"). Position each label at the midpoint of its corresponding side using the `.get_midpoint()` method and then shift slightly away (e.g., using `.next_to(midpoint, direction)`) with a buffer of at least 0.3 units.
+             • For angle labels: Optionally create three small arc objects (using an `Arc` from Manim) at each vertex along with a small `Tex` label (e.g., "∠A", "∠B", "∠C") next to each angle arc. Position these using `.next_to()` relative to the vertex ensuring the required spacing.
+        - Animation Sequence:
+             • Animate each side label with `Write(side_label)` sequentially, waiting 0.3 seconds between each.
+             • Animate the appearance of the angle arcs with `Create(angle_arc)` and accompanying labels with `Write(angle_label)`.
+             • All labels and arcs should preserve a constant minimum spacing of 0.3 units from neighboring objects.
+             • Wait(1) at the end of this sub-scene to let viewers absorb the information.
+
+    **Notes for Plugin Suggestion (if applicable):**
+        - **Plugin Suggestion:** Consider using the `manim-mobject-labeler` plugin if available, to simplify the automatic placement of labels at vertices and midpoints, ensuring consistent spacing and alignment. This plugin can automate some of the positioning that otherwise requires manual calculation using `.next_to()` and `.shift()`.
+
+2.  Overall, the scene maintains:
+    - All objects are positioned relative to the ORIGIN or other key references (e.g., using `.to_edge()`, `.next_to()`, and `.get_midpoint()`).
+    - Safe area margins (0.5 units) are rigorously respected.
+    - A minimum spacing of 0.3 units is enforced between all objects.
+    - Clear, sequential animations using `Write`, `Create`, and `FadeIn` for smooth transitions and improved viewer comprehension.
+    - Transition buffers (`Wait`) are used between key animations for improved pacing.
+
+</SCENE_VISION_STORYBOARD_PLAN>

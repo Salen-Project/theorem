@@ -1,0 +1,65 @@
+<SCENE_VISION_STORYBOARD_PLAN>
+[SCENE_VISION]
+1. **Scene Overview**:
+   - Title: "Angle Variations". This scene demonstrates how triangles are classified based on their interior angles: acute, right, and obtuse. It reinforces triangle properties by visually annotating the key angle features.
+   - Visual learning objectives for viewers:
+       • Use three separate triangle illustrations—one acute, one right, and one obtuse—each created using appropriate Manim object classes. For the acute and obtuse triangles, the default Triangle (or Polygon with adjusted vertices) is used; for the right triangle, explicitly use the Polygon class to ensure a 90° angle.
+       • Use Manim’s Arc and Rectangle objects to clearly mark and highlight the angles: small arcs (Arc) for acute angles, a square marker (Rectangle) near the right angle, and an extended arc (Arc with a larger radius) for the obtuse angle.
+       • Use Tex for brief annotations next to each triangle, ensuring texts remain within safe margins and are clearly spaced (minimum 0.3 units separation).
+   - How Manim visuals & animations support learning:
+       • The scene uses a VGroup to group each triangle with its corresponding annotation and angle markers. This grouping allows for relative positioning (using .next_to(), .align_to(), or .shift()) that always respects the overall safe area margins (0.5 units from scene edges) and a minimum spacing of 0.3 units between objects.
+       • MathTex is used to label any mathematical information if needed (e.g., angle measures) while Tex handles non-mathematical labels such as "Acute", "Right", or "Obtuse".
+       • Clear animation steps like Create, FadeIn, and Write enhance focus on the learning objective without cluttering the screen.
+
+[STORYBOARD]
+1. **Visual Flow & Pacing (Manim Animation Sequence)**:
+   - Overall Layout:
+       • Divide the screen horizontally into three sections, one for each triangle type. Each section is a VGroup containing a triangle, its angle markers (Arcs or Rectangle), and a Tex annotation. The VGroups are arranged with .next_to() methods ensuring a minimum of 0.3 units spacing between them, and all groups remain fully within the 0.5 unit safe area margin.
+       • All objects are positioned using relative positioning from ORIGIN and previously created objects.
+       • A Wait() of 0.5-1 seconds is inserted between major transitions to allow viewer absorption.
+       
+   - **Sub-scene A: Establishing the Layout**
+       • Visual Element: Create three empty VGroups (LeftGroup, CenterGroup, RightGroup) that will hold the triangle and its annotations.
+       • Animation Sequence:
+             1. Use Tex to display a scene title "Angle Variations" at the top-center, ensuring it is within safe margins. Position relative to ORIGIN using .to_edge(UP, buff=0.5).
+             2. Initialize LeftGroup and position it to the left side within the safe margin by aligning its left edge to the left safe area (0.5 units from the left edge). Similarly, position RightGroup to the right and CenterGroup in the middle. Use the .next_to() method with a buffer of 0.3 units between groups.
+             3. Issue a Wait(1) to let the scene settle.
+
+   - **Sub-scene B: Acute Triangle (Left Section)**
+       • Visual Element: Draw an acute triangle using the default Triangle (or a custom Polygon for a more irregular acute shape).
+       • Animation Sequence:
+             1. Create the triangle with the Create() animation over run_time=1. All vertices should be arranged to form an acute triangle.
+             2. For each vertex (or select one), attach small Arc objects (using Arc) to indicate an acute angle. Position each Arc relative to the vertex (using .next_to() with a buffer of 0.3 units to avoid overlap).
+             3. Add a Tex label "Acute Triangle" below the triangle using .next_to(triangle, DOWN, buff=0.3). The text is inserted such that it remains within the left safe area margins.
+             4. Use Write() for text and FadeIn() for arcs, with a combined run_time=1.
+             5. Wait(0.5) after this annotation.
+
+   - **Sub-scene C: Right Triangle (Center Section)**
+       • Visual Element: Construct a right triangle explicitly using the Polygon class, ensuring one angle is 90°.
+       • Animation Sequence:
+             1. Create the right triangle with Create() over run_time=1. Use relative positioning so that the triangle is centered in the CenterGroup.
+             2. Near the right angle vertex, add a small Rectangle marker (or a small square created via Square with appropriate dimensions) to denote the right angle. Position the Rectangle using .next_to() (or .shift()) with a buffer of 0.3 units relative to the right angle vertex.
+             3. Place a Tex label "Right Triangle" below the triangle using .next_to(triangle, DOWN, buff=0.3).
+             4. Animate the creation of the square with FadeIn() and the text with Write(), all with a run_time=1.
+             5. Insert a Wait(0.5) buffer for visual clarity.
+
+   - **Sub-scene D: Obtuse Triangle (Right Section)**
+       • Visual Element: Build an obtuse triangle using a custom Polygon, ensuring one angle exceeds 90°.
+       • Animation Sequence:
+             1. Create the obtuse triangle with Create() over run_time=1. Add it to the RightGroup which is positioned relative to the scene’s right safe area margin.
+             2. At the obtuse angle vertex, attach an extended Arc (with a larger angle sweep) to emphasize the obtuse nature. Use the Arc object with parameters adjusted to depict an angle greater than 90°. Position this arc using .next_to() so that its edge-to-edge distance is maintained at 0.3 units from the triangle edge.
+             3. Add a Tex annotation "Obtuse Triangle" below the triangle with .next_to(triangle, DOWN, buff=0.3).
+             4. Animate the arc with FadeIn() and the text with Write(), each with run_time=1.
+             5. Wait(0.5) to ensure visual clarity before ending the scene.
+
+   - **Visual Transitions and Final Composition**:
+       • After all three sub-scenes are animated, emphasize a brief summary overlay (optional small MathTex or Tex) at the bottom summarizing that triangle classifications depend on angle measures. This summary is placed at the bottom-center with .to_edge(DOWN, buff=0.5) ensuring safe margins.
+       • Conclude with a Wait(1) to allow viewers time to take in the final scene.
+       
+   - **Notes on Spatial and Relative Positioning**:
+       • All objects are positioned using relative methods (e.g., .next_to(), .shift(), .to_edge()) based on previously created objects or the scene's ORIGIN, strictly obeying the 0.5 unit safe area margin from all edges.
+       • Minimum spacing of 0.3 units is maintained between any two objects, including text, triangles, arcs, and markers.
+       • If complexity increases or custom markers/annotations are needed, consider grouping objects with VGroup for easier management and to uniformly apply spacing constraints.
+       
+   - **Plugin Suggestion:** Consider using the "manim-annotations" plugin if available, to streamline the process of attaching dynamic annotation indicators (arcs/squares) linking to triangle vertices.
+</SCENE_VISION_STORYBOARD_PLAN>

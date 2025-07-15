@@ -1,0 +1,91 @@
+<SCENE_TECHNICAL_IMPLEMENTATION_PLAN>
+0. **Dependencies**:
+    - **Manim API Version**: Latest stable release of Manim Community Edition.
+    - **Allowed Imports**: 
+          • "from manim import *" 
+          • "import numpy as np"
+          • No external assets. Optionally, approved plugins can be integrated. 
+    - **Plugin** (if used): 
+          • ### Plugin: manim-annotations (v1.0) - This plugin can simplify the dynamic attachment of annotations (arcs and markers) to vertices. Use only if available and documented.
+          
+1. **Manim Object Selection & Configuration (Text and Shapes)**:
+    - Objects:
+          • Tex: For all non-mathematical texts (scene title "Angle Variations", labels, and triangle type labels "Acute Triangle", "Right Triangle", "Obtuse Triangle") with font size ~28 for titles and ~24 for labels.
+          • MathTex: For any mathematical expressions (e.g., angle formulas), ensuring proper LaTeX formatting when needed.
+          • Triangle / Polygon: 
+                - For the acute triangle, either the default Triangle or a custom Polygon with vertices ensuring all angles < 90°.
+                - For the right triangle, use Polygon, explicitly chosen vertex coordinates that yield a 90° corner.
+                - For the obtuse triangle, use Polygon with one angle > 90°.
+          • Arc: 
+                - For acute triangle, small arcs near one or more acute vertices (radius chosen so that arc does not extend beyond triangle boundaries and is buffered by 0.3 units).
+                - For obtuse triangle, an extended Arc with a larger sweep angle (parameters adjusted to display > 90° visually).
+          • Rectangle or Square: 
+                - For right triangle, a small square marker (obtained via Rectangle or Square with side length computed to keep the marker spatially appropriate) placed adjacent to the 90° angle.
+    - Text Considerations:
+          • All texts use safe font sizes. Verify multi-word texts wrap if exceeding boundaries.
+          • Utilize .next_to() positioning ensuring text bounding boxes remain fully within the 0.5 unit margin.
+          • All text objects’ dimensions are checked against the safe area to prevent bounding box overflow.
+          
+2. **VGroup Structure & Hierarchy**:
+    - Create three main VGroup objects: LeftGroup, CenterGroup, RightGroup.
+          • Each VGroup contains:
+                - The triangle (Triangle or Polygon).
+                - Its corresponding angle marker (Arc for acute/obtuse or Square marker for right triangle).
+                - The Tex annotation for the triangle type.
+          • Each VGroup is designed such that internal spacing is maintained with a .next_to() buffer of no less than 0.3 units.
+          • A separate VGroup can be defined for the scene title to position it clearly relative to the safe top-edge.
+
+3. **Spatial Positioning Strategy**:
+    - Use exclusively relative positioning (next_to, to_edge, align_to, shift) from ORIGIN, the scene safe margins, or neighboring objects.
+          • Scene Title:
+                - Positioned using .to_edge(UP, buff=0.5) to ensure it stays within safe margins.
+          • VGroup Placements:
+                - LeftGroup: Align its left-most edge with the left safe area margin (0.5 units from scene’s left edge). 
+                - CenterGroup: Centered relative to ORIGIN.
+                - RightGroup: Align its right-most edge with the right safe area margin (0.5 units from scene’s right edge).
+          • Inter-Group Spacing:
+                - Use .next_to() with a buff of 0.3 units between LeftGroup, CenterGroup, and RightGroup.
+          • Object-Level Positioning:
+                - Within each VGroup, position the triangle first at a relative location ensuring the triangle fits. Then place angle markers by calling .next_to(the_vertex, RIGHT/UP/LEFT as appropriate, buff=0.3) to avoid overlap.
+                - The Tex annotation is positioned below the triangle using .next_to(triangle, DOWN, buff=0.3) ensuring the text remains within lower safe area margins.
+          • Safety Checks:
+                - Verify that after each .next_to() call, every object’s bounding box does not cross the 0.5-unit scene edge.
+                - For multi-line text, if needed, adjust font size or wrap lines to prevent overflow.
+
+4. **Animation Methods & Object Lifecycle Management**:
+    - General Animation Sequence:
+          • Title: Animate with Write() over run_time ~1.
+          • Triangles: Animate creation with Create() over run_time ~1 each.
+          • Angle Markers:
+                - For acute and obtuse triangles, animate the Arc objects with FadeIn() (run_time ~1).
+                - For the right triangle, animate the square marker using FadeIn() (run_time ~1).
+          • Annotations: Animate with Write() (run_time ~1).
+          • Transition Buffers: Insert Wait(0.5) to 1 seconds between groups to allow spatial clarity.
+    - Lifecycle:
+          • Ensure each object is created, animated, and if necessary, removed (with FadeOut or Uncreate) without overlapping in time with other objects.
+          • The ordering in the scene construct should start with the title, then positioning and creation of the LeftGroup, followed by a Wait(), then CenterGroup, then RightGroup.
+          
+5. **Code Structure & Reusability**:
+    - Organize code into modular functions:
+          • def create_triangle(vertices, label, marker_type, marker_args): Returns a VGroup that contains the triangle, marker, and label.
+                - marker_type can be "arc" or "square".
+                - marker_args include parameters like arc radius, angle sweep, or square dimensions.
+          • def position_vgroup(vgroup, reference, direction, buff=0.3): Handles relative positioning ensuring safe margins.
+    - Main construct() method:
+          • Start with dependency imports.
+          • Create and animate the title.
+          • Build LeftGroup (acute triangle): Construct triangle, attach small Arcs at one vertex to denote acute angle, and create "Acute Triangle" Tex – position relative to safe left margin.
+          • Build CenterGroup (right triangle): Construct using Polygon with a right angle; add a square marker at the right-angle vertex (using .next_to() with buff=0.3) and label "Right Triangle".
+          • Build RightGroup (obtuse triangle): Construct using Polygon with an obtuse angle; attach an extended Arc at the obtuse vertex and label "Obtuse Triangle".
+          • Finally, add a summary overlay (via a small Tex or MathTex) at the bottom center using .to_edge(DOWN, buff=0.5) ensuring safe margins; animate with Write() followed by a Wait(1).
+    - Inline Comments:
+          • Each section and object creation includes comments explaining spatial choices with direct references (e.g., "ensuring a 0.5 unit safe margin" or "using .next_to() with buff=0.3 for spacing").
+          • Reference the Manim documentation for relative positioning guidelines and the manual for animation methods.
+          
+***Mandatory Safety Checks***:
+    - Ensure each object’s bounding box remains within 0.5 units of the scene boundary.
+    - Validate that the .next_to() and .shift() buffers are no less than 0.3 units between any two objects.
+    - Insert explicit Wait() calls between major animation steps to avoid clutter and sudden spacial transitions.
+    - Double-check text objects to prevent overflow: if using multiple lines, reduce font size and adjust positions accordingly.
+
+</SCENE_TECHNICAL_IMPLEMENTATION_PLAN>

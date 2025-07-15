@@ -1,0 +1,55 @@
+<SCENE_VISION_STORYBOARD_PLAN>
+[SCENE_VISION]
+1.  **Scene Overview**:
+    - This scene, titled "Triangle Types", introduces three classifications of triangles: equilateral, isosceles, and scalene. It builds logically on the basic introduction of triangles and emphasizes their side-length properties.
+    - **Visual learning objectives for viewers:** 
+         - Represent each triangle using Manim's geometric primitives. For the equilateral triangle, use the default Triangle class. For the isosceles and scalene triangles, use the Polygon class to ensure control over side lengths.
+         - Use `Tex` to label each triangle (e.g., "Equilateral", "Isosceles", "Scalene") and to provide brief side-length property descriptions, ensuring clarity while limiting text.
+         - Position triangles inside a safe area (0.5 units margin on every side) with a minimum spacing of 0.3 units (edge-to-edge) between each triangle and accompanying texts.
+         - Use `VGroup` to group each triangle with its description for simpler relative positioning during animations.
+    - How Manim visuals & animations support learning? 
+         - Each triangle is created and arranged horizontally using relative positioning methods (`next_to`, `align_to`, `shift`), ensuring that no object is placed outside the safe area margins.
+         - Visual annotations with `Tex` provide immediate textual context next to the relevant triangle, supporting cognitive linking between the visual shape and its geometric classification.
+         - Smooth animations (`Create`, `FadeIn`, `Write`) will introduce each triangle sequentially with clear transition pauses (`Wait()`) to help learners absorb the classifications.
+    - Key concepts to emphasize visually:
+         - Triangle side length equality and inequality: Visual differentiation is achieved by drawing distinct side lengths.
+         - Maintain spatial clarity and hierarchy: The title, triangles, and labels are all arranged relative to the scene's center (ORIGIN) and safe margins, with careful use of `VGroup` to enforce the minimum spacing of 0.3 units.
+         - **Note:** Utilize `MathTex` only when incorporating any mathematical symbols or expressions, while `Tex` handles all descriptive labels.
+
+[STORYBOARD]
+1.  **Visual Flow & Pacing (Manim Animation Sequence)**:
+    - Begin with a title introduction using `Tex` that reads "Triangle Types", positioned at the top center relative to the ORIGIN but shifted downward to respect the 0.5 unit safe top margin. Animate with a `Write` animation (run_time=1.5).
+    - **Sub-scene 1: Equilateral Triangle**
+         - Visual Element: Create an equilateral triangle using the Manim `Triangle` class.
+         - Animation Sequence:
+             a. Instantiate the equilateral triangle and group it with its label using `VGroup`. The label is a `Tex` object reading "Equilateral: All sides equal" placed directly below the triangle (using `.next_to()` with a DOWN direction and a buffer of at least 0.3 units).
+             b. Position this VGroup relative to the left safe margin by aligning its left edge with the safe margin (using `.to_edge(LEFT)` shifted right by 0.5 units).
+             c. Animate with `Create` for the triangle and `Write` for the label concurrently (run_time=1.5).
+         - Ensure that the triangle and its label maintain a minimum spacing of 0.3 units between the triangle’s boundaries and the text.
+         - Include a short `Wait(1)` before transitioning to the next sub-scene.
+         
+    - **Sub-scene 2: Isosceles Triangle**
+         - Visual Element: Construct an isosceles triangle using the Manim `Polygon` class to define two equal sides.
+         - Animation Sequence:
+             a. Create the isosceles triangle and form a `VGroup` with its accompanying label, a `Tex` reading "Isosceles: Two sides equal", positioned below the triangle with `.next_to()` (with a 0.3 unit gap).
+             b. Position this VGroup to the right of the equilateral triangle's VGroup, ensuring a relative spacing of at least 0.3 units between the two groups.
+             c. Animate using `Create` for the triangle and `Write` for the label (run_time=1.5).
+         - Confirm that the new VGroup is fully within the safe area margins without overlapping the previous sub-scene.
+         - Insert a `Wait(1)` transition buffer.
+         
+    - **Sub-scene 3: Scalene Triangle**
+         - Visual Element: Instantiate a scalene triangle via the `Polygon` class with all sides of different lengths.
+         - Animation Sequence:
+             a. Draw the scalene triangle and create its descriptive VGroup with a `Tex` label "Scalene: All sides different", positioned below the triangle using `.next_to()` with the required 0.3 unit separation.
+             b. Place this VGroup to the right of the isosceles triangle's group, ensuring that the gap between VGroups equals or exceeds the minimum spacing of 0.3 units.
+             c. Animate with `Create` for the scalene triangle and `Write` for the text (run_time=1.5).
+         - Verify that this last element is aligned along the horizontal arrangement, respecting the safe 0.5 unit right margin.
+         - Use a final `Wait(2)` to allow viewers to absorb the layout before potentially transitioning to the next scene.
+         
+2.  **Additional Animation Details & Transitions**:
+    - Utilize relative positioning methods (`next_to()`, `.shift()`) throughout to guarantee that all objects (triangles and labels) are never placed outside the 0.5 unit safe area margins.
+    - Ensure that regardless of scene size adjustments, every object maintains the minimum 0.3 unit spacing from its adjacent objects (by measuring edge-to-edge using their bounding boxes).
+    - Each sub-scene transition includes a brief pause using `Wait()` to allow the learner to process the information visually before moving on.
+    - **Plugin Suggestion:** Consider using the `manim-slides` plugin if the implementation requires advanced sequencing of sub-scenes, though it is not mandatory as relative methods suffice.
+    
+</SCENE_VISION_STORYBOARD_PLAN>

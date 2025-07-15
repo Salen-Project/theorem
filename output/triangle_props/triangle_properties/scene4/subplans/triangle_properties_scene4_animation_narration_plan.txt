@@ -1,0 +1,73 @@
+<SCENE_ANIMATION_NARRATION_PLAN>
+
+[ANIMATION_STRATEGY]
+1. **Pedagogical Animation Plan:**
+    - The scene begins with a title displayed at the top center. We use a FadeIn animation for the Tex("Angle Sum Theorem") object with run_time=1.5. This immediate introduction sets the learning context and captures attention while ensuring the title remains in the safe area (0.5 units from the top edge) and at least 0.3 units away from subsequent elements.
+    - Next, a non-equilateral triangle is drawn using the Polygon class. It is centered at ORIGIN, with its vertices carefully defined so that the triangle respects safe margins (0.5 units) and maintains a minimum spacing of 0.3 units from the title. A Create animation (run_time=2) is used so that the drawing process itself reinforces the geometric structure.
+    - For each vertex of the triangle, an Arc is created (with a radius of approximately 0.4 units) to highlight the interior angles. The corresponding labels (MathTex r"\alpha", r"\beta", r"\gamma") are positioned with .next_to() relative to each arc, ensuring a minimal gap (0.3 units). These markers appear with a FadeIn animation (run_time=1 per marker) in sequence. Pedagogically, this isolated focus on each angle reinforces the idea that the triangle can be decomposed into parts.
+    - Grouping these arcs and labels into a VGroup (angle_arcs_group) allows us to later animate them as a set. The VGroup separation is enforced by a spacing of 0.3 units between each element so that when they are transformed, they remain clearly distinct and within the safe area.
+    - In the next phase, we dissect and rearrange the angle arcs:
+         • We perform a Transform (or MoveToTarget) on the first arc, moving it to the left of ORIGIN with a buffer of 0.3 units away from the triangle.
+         • Then, we animate the second arc by positioning it immediately to the RIGHT of the first (using .next_to() with a buff of 0.3) and the third arc to the RIGHT of the second. They reform into a horizontal line.
+         • Simultaneously, a MathTex object reading "180^\circ" is introduced using Write (run_time=1). It is placed just above or below the horizontally aligned arcs (ensuring a minimal 0.3 unit gap) to visually represent their sum.
+         • Pedagogically, this rearrangement makes explicit the concept that the sum of the angles forms a straight line; the movement reinforces the idea of partitioning and reassembling a whole concept.
+    - Finally, the horizontal assembly is emphasized using a Circumscribe animation (run_time=1) that traces around the arranged group. Following that, a final MathTex expression r"\alpha+\beta+\gamma=180^\circ" is written (run_time=1.5) below the group with a 0.3 unit separation. This consolidation step reaffirms the theorem and allows the learner to pause and reflect.
+    - The scene wraps up by fading out all elements (triangle, arcs, labels, and text) simultaneously using FadeOut. A concluding Wait(2) ensures viewers have time to internalize the concept before moving to the next scene.
+
+    **Pedagogical Rationale for VGroup and Element Transitions:**
+      - Grouping using VGroup ensures that all angle markers move in a coordinated fashion, guiding the viewer’s eyes from the original triangle to their reassembled form.
+      - Each transformation (Shift and Transform) is timed (1–1.5 seconds each) to provide an easy-to-follow visual breakdown of the overall concept.
+      - The explicit use of Wait() instructions (e.g., Wait(1) after title introduction, Wait(0.5) after angle markers appear, and Wait(1) after the transformation) are pedagogically motivated to let the learner process each step.
+      - Keeping all elements within strict spatial margins (0.5 unit safe area and 0.3 unit minimum spacing) guarantees that no visual clutter or overlap distracts from the learning goals.
+
+2. **Scene Flow - Pedagogical Pacing and Clarity:**
+    - Overall, the animation sequence is divided into three main sub-sections:
+         • "Introduction and Triangle Setup": Title fades in, triangle is drawn, and angles are marked with corresponding labels. This phase orients the learner by connecting with previous discussions about angles.
+         • "Angle Dissection and Rearrangement": The arcs are extracted from the triangle and rearranged into a straight horizontal line, with the "180°" annotation appearing alongside. This is the core instructional segment where the triangle angle sum theorem is visually demonstrated.
+         • "Concept Reinforcement and Closure": A circumscription emphasizes the reassembled group and the final annotated equation reaffirms the theorem before all objects fade out.
+    - Spatial progression is carefully managed:
+         - Title is at the top center (maintaining a 0.5 unit margin). The triangle is centered below the title with a minimum 0.3 unit gap.
+         - The dissected elements are moved left and right of the triangle, ensuring they never come closer than 0.3 units to each other or other elements, preserving clarity.
+         - The final equation is positioned relative to the rearranged angles, also respecting the 0.3 unit spacing.
+    - Transition buffers (Wait() calls) are included after each major animation phase:
+         • A Wait(1) after the title FadeIn allows the viewer to register the scene title.
+         • A Wait(0.5) after the angle markers have appeared provides a reflective pause.
+         • A Wait(1) following the transformation ensures that the rearranged format is clearly observed before annotation is added.
+         • A final Wait(2) at the end allows for consolidation of the learning moment.
+    - Synchronization with narration is built in so that the spoken explanation corresponds directly with each animated transformation:
+         - Narration cues match the start and end of each animation (e.g., "Now, notice how we extract the angles..." as the transformation occurs).
+         - This coherence between narration and animation helps maximize viewer engagement and retention by emphasizing key teaching moments.
+
+[NARRATION]
+- **Pedagogical Narration Script:**
+    (0.0 sec, as the title fades in)
+    "Welcome to Scene 4, where we uncover one of the foundational properties of triangles: the angle sum theorem. Notice the title, 'Angle Sum Theorem,' which sets the stage for what is to come."
+    
+    (After title appears and a Wait(1))
+    "Here we see a carefully drawn triangle—for clarity, a non-equilateral form to emphasize that the theorem holds regardless of triangle type. Each corner is marked with a distinct arc, representing its interior angles. We label these as α, β, and γ."
+    
+    (As each arc and label fades in sequentially; use timing to correspond with each FadeIn animation)
+    "Look at how each angle is isolated. This segmentation allows us to focus on the role each plays in completing the triangle."
+    
+    (After a brief pause, immediately as the transformation begins)
+    "Now, let’s explore the magic behind these angles. Watch as we gently detach each arc from the triangle. Notice how the first angle slides neatly to the left, followed by the second and third aligning to form a straight line."
+    
+    (As the angles join to form a horizontal line, and the '180°' annotation is written)
+    "When you reposition these angles side by side, they align perfectly to form a straight line. And what is the measure of a straight line? Exactly 180 degrees! This reveals the connection between the internal angles of any triangle."
+    
+    (During the circumscription and final equation Write animation)
+    "To reinforce this key concept, we now highlight the complete arrangement. The final expression, written as α + β + γ = 180° shows that the sum of the interior angles of a triangle is always 180 degrees. This is a powerful insight that underpins much of triangle geometry."
+    
+    (As the scene prepares to fade out; during the final Wait(2))
+    "Take a moment to absorb this idea. Notice how each movement in the animation has led us logically to this conclusion. Building on our previous discussions about angles, we now see how those fundamentals come together in a triangle. Get ready, because in the next part, we'll apply this theorem to solve more complex problems."
+    
+- **Narration Sync - Pedagogical Alignment:**
+    - The narration is tightly synchronized with the animations:
+         • The initial greeting and title explanation are delivered as the title fades in.
+         • During the drawing of the triangle and the introduction of angle markers, the narration explains the importance of segmenting the triangle to understand its parts.
+         • As the transformation and rearrangement of angles begin, the narration guides the viewer to focus on the shifting arcs and the appearance of the "180°" label.
+         • The final narration is timed to coincide with the circumscription and display of the complete equation, ensuring that the learner grasps the full significance of the angle sum theorem.
+    - Each specific animation cue (e.g., FadeIn for arcs, Transform for moving arcs, Write for the "180°" and final equation) is preceded by a clear verbal explanation, ensuring that the viewer knows what to look for and why it matters.
+    - The strategic pauses (Wait() commands) built into the animation allow the narration to make slight pauses between explanations for deeper cognitive processing of the concept.
+
+</SCENE_ANIMATION_NARRATION_PLAN>

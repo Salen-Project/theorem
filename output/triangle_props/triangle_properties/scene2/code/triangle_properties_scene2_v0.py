@@ -1,0 +1,132 @@
+
+from manim import *
+from manim import config as global_config
+from manim_voiceover import VoiceoverScene
+from src.utils.kokoro_voiceover import KokoroService  # You MUST import like this as this is our custom voiceover service.
+
+# Plugin imports - these plugins are included for extended functionality if needed.
+from manim_circuit import *
+from manim_physics import *
+from manim_chemistry import *
+from manim_dsa import *
+from manim_ml import *
+
+# Helper Functions/Classes (Implement and use helper classes and functions for improved code reusability and organization)
+class Scene2_Helper:
+    """
+    Helper class for Scene2 that includes utility functions for creating triangle groups
+    and other reusable objects for the animation.
+    """
+    def __init__(self, scene):
+        self.scene = scene
+
+    def create_triangle_group(self, triangle, label_text):
+        """
+        Creates a VGroup containing the triangle and its descriptive label.
+        The label is positioned directly below the triangle with a minimum spacing of 0.3 units.
+        """
+        # Create the label with recommended font size 24 and a color that is not BLACK.
+        label = Tex(label_text, font_size=24, color=WHITE)
+        label.next_to(triangle, DOWN, buff=0.3)
+        group = VGroup(triangle, label)
+        return group
+
+class Scene2(VoiceoverScene, MovingCameraScene):
+    """
+    Scene2: "Triangle Types" 
+    This scene introduces three classifications of triangles:
+    Equilateral, Isosceles, and Scalene. Each triangle is created with its label
+    and arranged horizontally within the safe area margins (0.5 unit on all sides)
+    with a minimum spacing of 0.3 units.
+    """
+    def construct(self):
+        # Initialize our custom voiceover service.
+        self.set_speech_service(KokoroService())
+
+        # Instantiate the helper class for object creation and layout.
+        helper = Scene2_Helper(self)
+
+        # --- Stage 1: Title ---
+        # Create and position the title at the top center while ensuring a 0.5 unit safe margin.
+        title = Tex("Triangle Types", font_size=28, color=TEAL_C)
+        title.to_edge(UP, buff=0.5)
+        # Voiceover for title introduction.
+        with self.voiceover(text="Welcome to Scene 2: Triangle Types. In this section, we explore how triangles are classified based on their side lengths. Notice the clear title up top, which introduces the topic and sets the stage for what’s to come.") as tracker:
+            self.play(Write(title), run_time=1.5)
+            self.wait(0.5)
+
+        # --- Stage 2: Equilateral Triangle ---
+        # Create an equilateral triangle using Manim's default Triangle class.
+        equilateral_triangle = Triangle(stroke_color=BLUE_C, fill_color=BLUE_D, fill_opacity=0.5)
+        # Create its descriptive label and group them.
+        equilateral_group = helper.create_triangle_group(equilateral_triangle, "Equilateral: All sides equal")
+        # Position the equilateral group to the left safe margin.
+        equilateral_group.to_edge(LEFT, buff=0.5)
+        # Constraint Check: Ensure the equilateral_group remains fully within the safe area margins.
+        # (Manual verification: equilateral_group's bounding box should lie within x ≥ -7+0.5 and x ≤ 7-0.5, and similarly for y.)
+
+        with self.voiceover(text="Let’s begin with the equilateral triangle. Observe that all three sides are perfectly equal. This uniformity is one of the simplest and most symmetric properties in geometry, making it a natural starting point. Imagine a perfectly balanced three-legged stool, where each leg is exactly the same length.") as tracker:
+            self.play(
+                Create(equilateral_triangle),
+                Write(equilateral_group[1]),
+                run_time=1.5
+            )
+            self.wait(1)
+
+        # --- Stage 3: Isosceles Triangle ---
+        # Create an isosceles triangle using the Polygon class.
+        # Define vertices such that exactly two sides are equal.
+        # Selected vertices: left bottom, right bottom, and a top point that creates two equal sloping sides.
+        isosceles_triangle = Polygon(
+            np.array([-1, 0, 0]),
+            np.array([1, 0, 0]),
+            np.array([0, 1.5, 0]),
+            stroke_color=GREEN_C,
+            fill_color=GREEN_D,
+            fill_opacity=0.5
+        )
+        isosceles_group = helper.create_triangle_group(isosceles_triangle, "Isosceles: Two sides equal")
+        # Position the isosceles group to the right of the equilateral group, with a 0.3 unit gap.
+        isosceles_group.next_to(equilateral_group, RIGHT, buff=0.3)
+        # Constraint Check: Verify that isosceles_group remains within the safe area margins.
+        # (Manual review: Ensure its bounding box does not exceed x = 7 - 0.5.)
+
+        with self.voiceover(text="Next, we move to the isosceles triangle. Unlike the equilateral triangle, only two sides are equal here. Think of a traditional triangular roof, where perhaps the two sloping sides are the same, but the base differs. This subtle change in side-length equality highlights an important variation in triangle properties.") as tracker:
+            self.play(
+                Create(isosceles_triangle),
+                Write(isosceles_group[1]),
+                run_time=1.5
+            )
+            self.wait(1)
+
+        # --- Stage 4: Scalene Triangle ---
+        # Create a scalene triangle using the Polygon class with all sides of different lengths.
+        # Selected vertices are chosen so that no two sides are equal.
+        scalene_triangle = Polygon(
+            np.array([0, 0, 0]),
+            np.array([1.2, 0, 0]),
+            np.array([0.8, 1, 0]),
+            stroke_color=PURPLE_C,
+            fill_color=PURPLE_C,
+            fill_opacity=0.5
+        )
+        scalene_group = helper.create_triangle_group(scalene_triangle, "Scalene: All sides different")
+        # Position the scalene group to the right of the isosceles group with a minimum spacing of 0.3 units.
+        scalene_group.next_to(isosceles_group, RIGHT, buff=0.3)
+        # Check right margin: if the right edge of the scalene_group exceeds safe area (x > 7 - 0.5 = 6.5),
+        # shift it leftwards. This is an explicit spatial constraint check.
+        if scalene_group.get_right()[0] > 6.5:
+            shift_amount = scalene_group.get_right()[0] - 6.5
+            scalene_group.shift(LEFT * shift_amount)
+            # COMMENT: Scaled scalene_group leftwards to conform with the 0.5 unit safe right margin.
+
+        with self.voiceover(text="Finally, we come to the scalene triangle, where no two sides are the same length. This type encapsulates the idea of complete variability and asymmetry. Picture a uniquely shaped piece of modern art—each edge is distinct, and there’s no uniformity.") as tracker:
+            self.play(
+                Create(scalene_triangle),
+                Write(scalene_group[1]),
+                run_time=1.5
+            )
+            self.wait(2)
+
+        # End of Scene2
+        self.wait(1)

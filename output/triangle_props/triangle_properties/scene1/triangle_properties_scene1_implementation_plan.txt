@@ -1,0 +1,235 @@
+# Scene 1 Implementation Plan
+
+<SCENE_VISION_STORYBOARD_PLAN>
+[SCENE_VISION]
+1.  **Scene Overview**:
+    - This introductory scene, "Intro Triangles," establishes the concept of a triangle by defining it as a closed three-sided polygon with three vertices and interior angles. It serves as the foundation for further exploration into triangle properties. The key takeaway is understanding that a triangle is formed by three line segments that meet at three vertices.
+    - **Visual learning objectives for viewers:** 
+        • Visualize a triangle using the Manim Polygon object (instead of the default Triangle class) so that we can clearly label each vertex, side, and angle.
+        • Use `Tex` to label vertices and sides, while keeping mathematical expressions (if any) with `MathTex` and wrapping non-mathematical text in `\text{}`.
+        • Ensure all objects (triangle, labels, arcs) are grouped via a `VGroup` when needed for consistent spacing and relative animations.
+    - How Manim visuals & animations support learning:
+        • The triangle is produced centrally using a `Polygon` object (constructed with three vertices defined relative to the ORIGIN), ensuring it lies entirely within the safe area margins (0.5 units from each scene edge).
+        • Label objects (`Tex` for vertices, sides, and angles) are positioned using relative positioning methods (e.g., `.next_to()`, `.align_to()`, and `.shift()`) with a minimum spacing of 0.3 units from one another.
+        • The scene uses smooth animations such as `Create`, `Write`, and `FadeIn` to draw attention sequentially to the triangle, its vertices, sides, and angles.
+        • A brief `Wait()` is included between animation sequences for pacing and clarity.
+    - Key concepts visually emphasized:
+        • The triangle's structure (three sides, three vertices, and three angles) is clearly outlined.
+        • Safe area margins (0.5 units from scene boundaries) and a minimum spacing of 0.3 units between all objects are strictly observed.
+        • Clear positioning relative to the ORIGIN and each object ensures that labels and arcs are distinct and non-overlapping.
+
+[STORYBOARD]
+1.  **Visual Flow & Pacing (Manim Animation Sequence)**:
+    - Overall Flow: Start with the scene title, then animate the creation of a triangle centrally placed, followed by sequential labeling of vertices, sides, and angles with relative spacing.
+    - Transition: Use short `Wait()` periods (e.g., Wait(0.5)) between each sub-scene for visual clarity.
+
+    **Sub-scene 1: Scene Title and Setup**
+        - Visual Element: A `Tex` object with the text "Intro Triangles" to serve as the scene title.
+        - Animation Sequence:
+            • Create the title using `Write(title)` where `title` is a `Tex` object.
+            • Position the title at the top center relative to the ORIGIN by using `.to_edge(UP, buff=0.5)` ensuring it remains within the 0.5 unit safe area margin.
+            • Wait(1) to allow the viewer to read the title.
+
+    **Sub-scene 2: Drawing the Central Triangle**
+        - Visual Element: A `Polygon` object representing the triangle.
+            • Create three vertices relative to the ORIGIN (e.g., define vertices such that the triangle is centered and large enough to allow space for labels).
+            • Ensure all vertices and edges lie within the safe area margins (0.5 units from the scene edge).
+        - Animation Sequence:
+            • Use `Create(triangle)` animation (run_time=2) to draw the triangle.
+            • Group the triangle in a `VGroup` if needed for future animations.
+            • Wait(0.5) after creation.
+
+    **Sub-scene 3: Labeling the Vertices**
+        - Visual Element: Three `Tex` objects for vertex labels "A", "B", and "C".
+        - Animation Sequence:
+            • For each vertex:
+                  - Use the `triangle.get_vertices()` method to refer to each vertex.
+                  - Place a vertex label using `.next_to(vertex, direction)` where the directions are chosen (e.g., UP+LEFT, DOWN+RIGHT, UP+RIGHT) ensuring a minimum spacing of 0.3 units from the triangle’s vertices.
+                  - Animate each with `Write(label)` ensuring they are added one by one with a Wait(0.3) between each.
+            • Ensure each label is within the safe area margins.
+        
+    **Sub-scene 4: Labeling the Sides and Angles**
+        - Visual Element: 
+             • For side labels: Create three `Tex` objects (e.g., "side AB", "side BC", "side CA"). Position each label at the midpoint of its corresponding side using the `.get_midpoint()` method and then shift slightly away (e.g., using `.next_to(midpoint, direction)`) with a buffer of at least 0.3 units.
+             • For angle labels: Optionally create three small arc objects (using an `Arc` from Manim) at each vertex along with a small `Tex` label (e.g., "∠A", "∠B", "∠C") next to each angle arc. Position these using `.next_to()` relative to the vertex ensuring the required spacing.
+        - Animation Sequence:
+             • Animate each side label with `Write(side_label)` sequentially, waiting 0.3 seconds between each.
+             • Animate the appearance of the angle arcs with `Create(angle_arc)` and accompanying labels with `Write(angle_label)`.
+             • All labels and arcs should preserve a constant minimum spacing of 0.3 units from neighboring objects.
+             • Wait(1) at the end of this sub-scene to let viewers absorb the information.
+
+    **Notes for Plugin Suggestion (if applicable):**
+        - **Plugin Suggestion:** Consider using the `manim-mobject-labeler` plugin if available, to simplify the automatic placement of labels at vertices and midpoints, ensuring consistent spacing and alignment. This plugin can automate some of the positioning that otherwise requires manual calculation using `.next_to()` and `.shift()`.
+
+2.  Overall, the scene maintains:
+    - All objects are positioned relative to the ORIGIN or other key references (e.g., using `.to_edge()`, `.next_to()`, and `.get_midpoint()`).
+    - Safe area margins (0.5 units) are rigorously respected.
+    - A minimum spacing of 0.3 units is enforced between all objects.
+    - Clear, sequential animations using `Write`, `Create`, and `FadeIn` for smooth transitions and improved viewer comprehension.
+    - Transition buffers (`Wait`) are used between key animations for improved pacing.
+
+</SCENE_VISION_STORYBOARD_PLAN>
+
+<SCENE_TECHNICAL_IMPLEMENTATION_PLAN>
+0. **Dependencies**:
+    - **Manim API Version**: Latest stable release of Manim Community Edition.
+    - **Allowed Imports**: 
+          • from manim import *
+          • import numpy as np
+          • (Optional Plugin) "manim-mobject-labeler" - for advanced automatic label placement.
+          <!-- Plugin: manim-mobject-labeler - Useful for ensuring consistent relative positioning of text and geometric objects. -->
+    
+1. **Manim Object Selection & Configuration (Text and Shapes)**:
+    - Objects & Classes:
+          • Title: A Tex object for the scene title ("Intro Triangles") with a font size of 28.
+          • Triangle Shape: A Polygon object constructed from 3 vertices defined relative to ORIGIN to ensure central positioning.
+          • Vertex Labels: Three Tex objects ("A", "B", "C") for labeling each vertex. Font size recommended: 24.
+          • Side Labels: Three Tex objects ("side AB", "side BC", "side CA") placed at the midpoints of triangle sides. Font size recommended: 24.
+          • Angle Labels & Arcs: For each vertex an optional Arc (using the Arc class) paired with a Tex object (e.g., "∠A", "∠B", "∠C") to illustrate angle positions.
+    - Configuration & Parameters:
+          • All text objects use Tex for non-mathematical content.
+          • Ensure all objects’ bounding boxes begin at least 0.5 units away from any scene edge and no two objects have less than 0.3 units spacing (using methods like .next_to(buff=0.3) or proper shift).
+          • Use relative positioning: Methods include `.to_edge()`, `.next_to()`, `.get_midpoint()`, and `.shift()`.
+          • Explicit safe margins: Title is positioned with `.to_edge(UP, buff=0.5)`.
+          • For vertex labels, use the triangle’s vertex coordinates (accessed via triangle.get_vertices()) and place each with a direction (e.g., UP+LEFT, DOWN+RIGHT, UP+RIGHT) ensuring a buff of at least 0.3.
+          • Side labels are placed at the midpoints found via triangle.get_midpoint() then further repositioned using .next_to(midpoint, direction, buff=0.3).
+          • Angle labels and arcs should be positioned close (using .next_to() with buff=0.3) to their respective vertex while ensuring they do not exceed safe boundaries.
+    
+2. **VGroup Structure & Hierarchy**:
+    - Grouping Objects:
+          • Create a main VGroup (e.g., triangle_group) that holds the triangle polygon along with all labels and arcs for easy animation management.
+          • Separate VGroups for vertex labels (vertex_labels_group) and side/angle labels (labels_group) may be created.
+    - Hierarchical Structure:
+          • Parent VGroup holds all scene elements; each sub-group ensures internal spacing is kept at a minimum of 0.3 units between its child elements.
+    - Rationale: Grouping preserves logical and sequential animations (e.g., fading in the triangle first then sequentially writing labels).
+
+3. **Spatial Positioning Strategy**:
+    - Relative Positioning:
+          • All objects are positioned relative to ORIGIN or to other objects.
+          • Title: Positioned using .to_edge(UP, buff=0.5) ensures a safe margin from the top edge.
+          • Triangle: Drawn centrally making sure the farthest vertices are no closer than 0.5 units from scene boundaries.
+          • Vertex Labels: Positioned with .next_to(vertex, direction, buff=0.3) where each vertex is accessed from triangle.get_vertices().
+          • Side Labels: Positioned at each side's midpoint (using triangle.get_midpoint()) then nudged via .next_to() with a buff of 0.3.
+          • Angle Arcs & Labels: Created at each vertex with similar relative positioning to ensure that the arc and text remain within the safe area.
+    - Measures for Text Bounding Box Overflow:
+          • Use relative positioning and check each Tex object's bounding box to confirm it remains within the safe 0.5 unit margins.
+          • For multi-word labels (or in cases where text might expand), consider splitting into multiple lines to prevent overflow.
+          • Consistently use .next_to() with a minimum buff of 0.3 for all labels to maintain clear separation.
+          • Adjust font sizes (e.g., 28 for titles, 24 for labels) to ensure that text size does not cause bounding box expansion beyond allowed margins.
+
+4. **Animation Methods & Object Lifecycle Management**:
+    - Animation Sequences:
+          • Sub-scene 1 (Scene Title and Setup):
+                - Use Write(title) with run_time approximately 1 second.
+                - Follow with a Wait(1) for pause.
+          • Sub-scene 2 (Drawing the Central Triangle):
+                - Use Create(triangle, run_time=2) to animate the drawing of the polygon.
+                - Group the triangle into a VGroup if necessary.
+                - Follow with a Wait(0.5) after drawing.
+          • Sub-scene 3 (Labeling the Vertices):
+                - Animate each vertex label with Write(label) sequentially.
+                - Use Wait(0.3) between each label to allow visual separation.
+          • Sub-scene 4 (Labeling the Sides and Angles):
+                - For each side label, position using the midpoint with a buff of 0.3 and then animate using Write(side_label).
+                - For angle arcs & labels, animate with Create(angle_arc) and Write(angle_label) respectively.
+                - Insert Wait(0.3) between each animation, and a final Wait(1) after completing this stage.
+    - Transition Buffers:
+          • Explicit Wait() calls are used between each sub-scene to ensure smooth transitions and prevent clutter.
+    - Lifecycle:
+          • Each object is added via play commands then maintained in their groups until potentially being faded out or transitioned to a new scene.
+
+5. **Code Structure & Reusability**:
+    - Overall Structure:
+          • Begin with dependency imports followed by definitions for creating the triangle and label objects.
+          • Write modular functions, for example, create_triangle(), create_vertex_labels(), create_side_labels() and create_angle_elements(), that encapsulate repeated tasks of creation and positioning.
+          • All functions ensure that safe area margins (0.5 units) and minimum spacing (0.3 units) are enforced via relative methods.
+    - Inline Comments:
+          • Provide comments on each step detailing why a particular method (e.g., .next_to() vs .shift()) is used, referencing Manim’s documentation.
+          • Comments indicate safe margin enforcement and mention the usage of plugin features if the "manim-mobject-labeler" is used (e.g., "Using manim-mobject-labeler for automatic label positioning simplifies the relative placement logic.").
+    - Reusability:
+          • Modular functions allow code reuse in possible future scenes that involve geometric figures or similar layout constraints.
+          • Ensure all object creation respects the spatial constraints uniformly.
+    
+***Mandatory Safety Checks***:
+    - Safe Area Enforcement: 
+          • Validate that all objects (titles, triangles, vertex labels, side labels, arcs, and angle labels) are positioned at least 0.5 units away from scene edges.
+    - Minimum Spacing Validation:
+          • Confirm that .next_to() placements use a buff of at least 0.3 units, validating that no two objects’ bounding boxes overlap.
+    - Transition Buffers:
+          • Insert Wait() calls between each stage (e.g., Wait(1) after title, Wait(0.5) after triangle creation, and Wait(0.3) between label animations) to respect pacing and avoid visual clutter.
+          
+</SCENE_TECHNICAL_IMPLEMENTATION_PLAN>
+
+<SCENE_ANIMATION_NARRATION_PLAN>
+
+[ANIMATION_STRATEGY]
+1. **Pedagogical Animation Plan:**
+    - **Parent VGroup Transitions:**
+        • All elements (triangle, vertex labels, side labels, and angle arcs with labels) are grouped into a main VGroup called "triangle_group" to ensure uniform spatial spacing.
+        • A subtle FadeIn transition (run_time=0.5 seconds) is applied to the entire "triangle_group" right after the triangle is created. This gradual reveal directs the learner’s focus from the overall shape to its individual components.
+        • Pedagogical rationale: By grouping related elements, we help the viewer understand that the triangle and its labels are part of one coherent geometric object, reinforcing the concept that each side and angle is interdependent.
+        
+    - **Element Animations within VGroups and for Individual Mobjects:**
+        • For the scene title, a Write animation (run_time=1 second) is used on a Tex object reading "Intro Triangles" positioned at the top center (using .to_edge(UP, buff=0.5)). This initial animation sets a clear, focused context while ensuring the text remains within the safe margins.
+        • The central triangle is drawn using a Create animation (run_time=2 seconds) on a Polygon object defined by three vertices placed relative to the ORIGIN. The drawing is done with careful attention to ensuring that each vertex remains at least 0.5 units from the scene edge.
+        • Each vertex label ("A", "B", "C") is animated using Write (run_time=0.7 seconds each) and is positioned using .next_to() with a minimum buff of 0.3 units from the corresponding vertex. The labels are placed in directions (for instance, UP+LEFT for "A", DOWN+RIGHT for "B", and UP+RIGHT for "C") to avoid overlap.
+        • Side labels ("side AB", "side BC", "side CA") are placed at the midpoints of the corresponding sides using the .get_midpoint() method and then shifted outward using .next_to() with a buff of 0.3 units. Each side label is animated sequentially with Write (run_time=0.6 seconds each).
+        • Optional angle arcs and labels (e.g., "∠A", "∠B", "∠C") are introduced with a Create animation (run_time=0.5 seconds for the arc) followed by a Write animation (run_time=0.6 seconds for the Tex label), placed near the vertices with .next_to() ensuring the safe area margin.
+        • Pedagogical purpose: Each individual animation isolates a key feature of the triangle—a vertex, a side, or an angle. By animating them sequentially and with a controlled pacing, viewers are able to digest one piece of information at a time, building up an integrated understanding of the triangle’s geometry.
+
+    - **Coordination Between VGroup Transitions and Individual Animations:**
+        • Once the triangle has been drawn and the main "triangle_group" is established, the vertex labels animate one after another. A brief Wait(0.3 seconds) is inserted between each to give the viewer time to absorb each label.
+        • After the vertices are labeled, a similar staged sequence is used for the side labels and angle elements with respective Wait(0.3 seconds) intervals.
+        • Overall, these coordinated animations (using Succession for each label group and a final AnimationGroup for highlighting combined elements) ensure spatial coherence and maintain the minimum spacing of 0.3 units between every element.
+        • Pedagogical explanation: This sequencing not only enhances clarity but also reinforces the concept that the triangle is composed of parts that together define its structure.
+
+2. **Scene Flow - Pedagogical Pacing and Clarity:**
+    - **Overall Animation Sequence, Spatial Progression for Learning:**
+        • The scene begins with the scene title "Intro Triangles" appearing at the top center, setting the thematic context.
+        • Next, the triangle is drawn centrally with a clear Create animation, ensuring that the shape is fully within the safe area margins (0.5 units from every edge), establishing the primary geometric object.
+        • After the triangle appears, vertex labels ("A", "B", "C") are sequentially written at positions determined by their relative location, ensuring a clear separation (minimum 0.3 units) from the triangle’s vertices.
+        • Following the vertices, side labels and optional angle representations are added at the midpoints and adjacent to the vertices, respectively, allowing learners to see the relationship between the abstract labels and the actual geometric sides and angles.
+        • Pedagogical rationale: By progressing in clear, distinct steps—from the overall shape to its finer details—the animation builds a mental model of a triangle as a combination of line segments and angles, paving the way for later concepts (such as angle sums and area formulas).
+
+    - **Transition Buffers for Pedagogical Pauses:**
+        • A Wait(1 second) is inserted after the scene title to allow viewers to focus on the topic.
+        • After creating the triangle, a Wait(0.5 seconds) provides time for the viewer to process the shape before its parts are labeled.
+        • Brief Wait(0.3 seconds) pauses are added between labeling each vertex and each side/angle to give the viewer time to connect the animation with the geometric feature being discussed.
+        • Pedagogical reasoning: These pauses ensure that viewers have time to internalize each piece of information rather than being overwhelmed, enhancing retention and understanding.
+
+    - **Coordination of Animation Timing with Narration:**
+        • The narration will reference the appearance of each element (title, triangle outline, vertex labels, side labels, and angle arcs) and pause momentarily in sync with the Wait() calls.
+        • Clear auditory cues ("Notice how this vertex is labeled 'A'...", "Now, observe the midpoint of side AB") guide the viewer’s attention precisely as each object appears.
+        • This synchronization maximizes engagement by aligning visual and auditory learning stimuli, reinforcing critical learning points exactly as they are introduced.
+
+[NARRATION]
+- **Pedagogical Narration Script:**
+
+    "Welcome to Scene 1: Intro Triangles. In this segment, we will explore the basic structure of one of the simplest yet most important geometric figures—a triangle. 
+    [Cue: As the title 'Intro Triangles' is written at the top of the screen, pause for 1 second.]
+    
+    "Notice the triangle appearing in the center of the screen. A triangle is defined as a closed three-sided polygon, meaning it has exactly three sides, three vertices, and three interior angles. 
+    [Cue: As the triangle is drawn with a Create animation over 2 seconds, emphasize that every vertex is strategically placed within our safe area.]
+
+    "Let’s focus on its three vertices. Each vertex – labeled 'A,' 'B,' and 'C' – represents a corner of the triangle. As each label appears one by one (with a pause of about 0.3 seconds between each), think of these points as the fundamental building blocks of the triangle's structure.
+    [Cue: Synchronize with the Write animations for vertex labels, and allow brief pauses for each.]
+
+    "Now, observe the labels along the sides. These indicate not just the edges but also help us reference the side lengths when we discuss measures and properties later. Each side label is carefully placed at the midpoint of the respective side, ensuring clear separation from the vertices.
+    [Cue: As each side label 'side AB', 'side BC', and 'side CA' appears (each with a Write animation of 0.6 seconds), highlight the spatial balance with a slight pause.]
+
+    "Additionally, we introduce angle indicators near each vertex. These arcs and angle labels, such as '∠A,' mark where the interior angles of the triangle appear. They are positioned with precision—at least 0.3 units away from other elements—to reinforce that even the angles have defined positions and relationships.
+    [Cue: Sync the appearance of the angle arcs and labels with the corresponding Create and Write animations.]
+
+    "By carefully constructing and labeling the triangle, we are building a strong foundation for understanding more complex properties later, such as the sum of interior angles and area calculations. 
+    [Cue: A final Wait(1 second) allows viewers to consolidate the information before transitioning to the next segment.]
+    
+    "Now that we’ve clearly defined the triangle’s basic structure, let's move on to exploring how these parts interact and contribute to its overall geometric properties. Stay tuned as we dive deeper into triangle properties in the upcoming scenes."
+    
+- **Narration Sync - Pedagogical Alignment:**
+    • The narration begins as soon as the title is written, ensuring the viewer's attention is immediately drawn to the core concept.
+    • Each cue in the narration directly corresponds to the start or end of an animation (for example, the triangle drawing or vertex label appearance), so that viewers can match what they see with what they hear.
+    • Pauses (implemented via Wait() calls) in both the narration and animation provide the necessary cognitive buffer, ensuring that learners have sufficient time to process each concept before moving on.
+    • This synchronized approach maximizes engagement and optimizes the learning experience by strategically guiding the viewer’s focus to key elements right when they emerge on the screen.
+
+</SCENE_ANIMATION_NARRATION_PLAN>
+

@@ -1,0 +1,91 @@
+<SCENE_TECHNICAL_IMPLEMENTATION_PLAN>
+0. **Dependencies**:
+    - **Manim API Version**: Target the latest stable Manim CE release.
+    - **Allowed Imports**: 
+         • Import from "manim" (e.g., Scene, Triangle, Polygon, Tex, VGroup, Create, Write, FadeIn, Wait).
+         • Import "numpy" if needed for coordinate computations.
+         • No external assets are used.
+    
+1. **Manim Object Selection & Configuration (Text and Shapes)**:
+    - **Triangle Objects**:
+         • Equilateral Triangle: Use Manim’s default Triangle class (creates an equilateral triangle by default).
+         • Isosceles Triangle: Use the Polygon class with three vertices chosen so that exactly two sides are equal.
+         • Scalene Triangle: Use the Polygon class with three distinct side lengths (each side length is different).
+    - **Text Labels & Title**:
+         • Title: A Tex object with content "Triangle Types" and font size ~28. It is used to introduce the scene.
+         • Labels for triangles: 
+              - "Equilateral: All sides equal" for the equilateral triangle.
+              - "Isosceles: Two sides equal" for the isosceles triangle.
+              - "Scalene: All sides different" for the scalene triangle.
+           Use Tex objects with font size ~24 (or smaller if the text wraps to multiple lines).
+    - **General Configuration**:
+         • All objects must be constrained within a safe area margin of 0.5 units from every scene edge.
+         • Minimum spacing between any two objects (including triangle shapes and text bounding boxes) is enforced at 0.3 units.
+         • Ensure that text bounding boxes are checked relative to the triangle objects, especially when text spans multiple lines to avoid overflow.
+    
+2. **VGroup Structure & Hierarchy**:
+    - Create three primary VGroups:
+         • equilateral_group: Contains the equilateral triangle and its Tex label. Use VGroup(equilateral_triangle, equilateral_label).
+         • isosceles_group: Contains the isosceles triangle (constructed via Polygon) and its corresponding Tex label.
+         • scalene_group: Contains the scalene triangle (constructed via Polygon) and its corresponding Tex label.
+    - Each VGroup is structured to keep the triangle and its description together such that the label is positioned below its corresponding triangle with a buffer of at least 0.3 units using .next_to(triangle, DOWN, buff=0.3).
+    - Grouping ensures relative positioning is maintained when animating into the scene.
+    
+3. **Spatial Positioning Strategy**:
+    - **Title Positioning**:
+         • Position the title at the top center relative to ORIGIN.
+         • Use .to_edge(UP, buff=0.5) to maintain the 0.5 unit safe area at the top.
+    - **Triangle Groups Positioning**:
+         • Equilateral Group:
+              - Position using .to_edge(LEFT, buff=0.5) so that its left boundary respects the safe area.
+         • Isosceles Group:
+              - Position relative to the equilateral_group using next_to(equilateral_group, RIGHT, buff=0.3) ensuring edge-to-edge spacing is maintained.
+         • Scalene Group:
+              - Position relative to the isosceles_group using next_to(isosceles_group, RIGHT, buff=0.3). Further, check that after placement, the right boundary is within the 0.5 units margin (using .shift or .to_edge(RIGHT, buff=0.5) if needed).
+    - **Safe Area and Buffer Check**:
+         • All objects’ bounding boxes are measured explicitly to avoid overflow: verify that even the multi-line text descriptions do not exceed the safe margins.
+         • Use relative positioning (next_to, align_to, shift) exclusively with reference to previous groups, ORIGIN, or safe edge objects.
+    
+4. **Animation Methods & Object Lifecycle Management**:
+    - **Animation Sequence**:
+         • Title Animation:
+              - Use Write(title) with run_time=1.5 to introduce the title.
+         • Sub-scene 1 (Equilateral Triangle):
+              a. Instantiate the equilateral triangle and its label, group them in equilateral_group.
+              b. Animate the triangle with Create(equilateral_triangle) and simultaneously Write(equilateral_label) for run_time=1.5.
+              c. After displaying, run Wait(1) as a transition buffer.
+         • Sub-scene 2 (Isosceles Triangle):
+              a. Instantiate the isosceles triangle and its label; group them in isosceles_group.
+              b. Position isosceles_group to the right of equilateral_group with a .next_to( ..., RIGHT, buff=0.3) call.
+              c. Animate with Create(isosceles_triangle) and Write(isosceles_label) concurrently (run_time=1.5).
+              d. Run Wait(1) after the animation.
+         • Sub-scene 3 (Scalene Triangle):
+              a. Instantiate the scalene triangle and its Tex label; group into scalene_group.
+              b. Position scalene_group to the right of isosceles_group via .next_to(isosceles_group, RIGHT, buff=0.3) ensuring the group lies within the right safe margin.
+              c. Animate using Create(scalene_triangle) and Write(scalene_label) with run_time=1.5.
+              d. Finalize with Wait(2) to allow viewer absorption.
+    - **Transition Buffers & Safety Checks**:
+         • Insert explicit Wait() calls between sub-scenes to avoid visual clutter.
+         • Confirm during each animation stage that objects do not migrate outside the safe 0.5 unit margin and remain spaced by at least 0.3 units edge-to-edge.
+    
+5. **Code Structure & Reusability**:
+    - **Modular Functions**:
+         • Create helper functions for repetitive tasks such as "create_triangle_group(triangle_object, label_text)" to instantiate a VGroup that positions the label below the triangle.
+         • These functions will encapsulate both the object creation and the relative positioning logic (e.g., .next_to(triangle, DOWN, buff=0.3)).
+    - **Logical Sections in Code**:
+         • Begin with dependency imports.
+         • Define object creation blocks (title, triangle groups).
+         • Position each element using relative positioning methods.
+         • Organize the main construct() method to sequentially animate the introduction of objects.
+    - **Inline Comments**:
+         • Provide comments explaining decisions such as:
+              - "Positioning relative to safe margin using .to_edge(LEFT, buff=0.5)"
+              - "Ensuring at least 0.3 unit spacing between VGroups with next_to(..., buff=0.3)"
+              - "Using Create and Write for clear visual transitions."
+    
+***Mandatory Safety Checks***:
+    - **Safe Area Enforcement**: Every object (triangle shapes and text) initiates and remains within a 0.5 unit safe margin on all sides. This is achieved by starting objects at safe positions (e.g., .to_edge approaches) and verifying with bounding box measurements.
+    - **Minimum Spacing Validation**: Use next_to(…, buff=0.3) between all adjacent objects (e.g., triangle and label, successive VGroups) to enforce a minimum edge-to-edge spacing of 0.3 units.
+    - **Transition Buffers**: Explicit Wait() calls (1 second between subscenes and 2 seconds at the end) are used so that each scene component is visually separate and easily digestible.
+    
+</SCENE_TECHNICAL_IMPLEMENTATION_PLAN>

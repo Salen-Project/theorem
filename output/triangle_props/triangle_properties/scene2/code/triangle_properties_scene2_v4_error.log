@@ -1,0 +1,70 @@
+
+Error in attempt 0:
+╭─────────────────────────────── Traceback (most recent call last) ────────────────────────────────╮
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/manim/cli/render/commands.py:120  │
+│ in render                                                                                        │
+│                                                                                                  │
+│   117 │   │   │   try:                                                                           │
+│   118 │   │   │   │   with tempconfig({}):                                                       │
+│   119 │   │   │   │   │   scene = SceneClass()                                                   │
+│ ❱ 120 │   │   │   │   │   scene.render()                                                         │
+│   121 │   │   │   except Exception:                                                              │
+│   122 │   │   │   │   error_console.print_exception()                                            │
+│   123 │   │   │   │   sys.exit(1)                                                                │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/manim/scene/scene.py:229 in       │
+│ render                                                                                           │
+│                                                                                                  │
+│    226 │   │   """                                                                               │
+│    227 │   │   self.setup()                                                                      │
+│    228 │   │   try:                                                                              │
+│ ❱  229 │   │   │   self.construct()                                                              │
+│    230 │   │   except EndSceneEarlyException:                                                    │
+│    231 │   │   │   pass                                                                          │
+│    232 │   │   except RerunSceneException as e:                                                  │
+│                                                                                                  │
+│ /home/neo/dev/salen/theorem/output/triangle_props/triangle_properties/scene2/code/triangle_prope │
+│ rties_scene2_v4.py:82 in construct                                                               │
+│                                                                                                  │
+│    79 │   │   title = Tex("Triangle Types", font_size=28, color=TEAL_C)                          │
+│    80 │   │   title.to_edge(UP, buff=0.5)                                                        │
+│    81 │   │   # Voiceover for title introduction.                                                │
+│ ❱  82 │   │   with self.voiceover(text="Welcome to Scene 2: Triangle Types. In this section, w   │
+│    83 │   │   │   self.play(Write(title), run_time=1.5)                                          │
+│    84 │   │   │   self.wait(0.5)                                                                 │
+│    85                                                                                            │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/contextlib.py:137 in __enter__                  │
+│                                                                                                  │
+│   134 │   │   # they are only needed for recreation, which is not possible anymore               │
+│   135 │   │   del self.args, self.kwds, self.func                                                │
+│   136 │   │   try:                                                                               │
+│ ❱ 137 │   │   │   return next(self.gen)                                                          │
+│   138 │   │   except StopIteration:                                                              │
+│   139 │   │   │   raise RuntimeError("generator didn't yield") from None                         │
+│   140                                                                                            │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/manim_voiceover/voiceover_scene.p │
+│ y:187 in voiceover                                                                               │
+│                                                                                                  │
+│   184 │   │                                                                                      │
+│   185 │   │   try:                                                                               │
+│   186 │   │   │   if text is not None:                                                           │
+│ ❱ 187 │   │   │   │   yield self.add_voiceover_text(text, **kwargs)                              │
+│   188 │   │   │   elif ssml is not None:                                                         │
+│   189 │   │   │   │   yield self.add_voiceover_ssml(ssml, **kwargs)                              │
+│   190 │   │   finally:                                                                           │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/manim_voiceover/voiceover_scene.p │
+│ y:70 in add_voiceover_text                                                                       │
+│                                                                                                  │
+│    67 │   │   │   )                                                                              │
+│    68 │   │                                                                                      │
+│    69 │   │   dict_ = self.speech_service._wrap_generate_from_text(text, **kwargs)               │
+│ ❱  70 │   │   tracker = VoiceoverTracker(self, dict_, self.speech_service.cache_dir)             │
+│    71 │   │   self.renderer.skip_animations = self.renderer._original_skipping_status            │
+│    72 │   │   self.add_sound(str(Path(self.speech_service.cache_dir) / dict_["final_audio"]))    │
+│    73 │   │   self.current_tracker = tracker                                                     │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+AttributeError: 'DummyVoiceover' object has no attribute 'cache_dir'
+

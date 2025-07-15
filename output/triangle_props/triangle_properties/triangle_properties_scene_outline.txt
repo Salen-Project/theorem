@@ -1,0 +1,36 @@
+<SCENE_OUTLINE>
+    <SCENE_1>
+    Scene Title: Intro Triangles
+    Scene Purpose: Introduce the basic concept and definition of a triangle; establish foundational geometric principles.
+    Scene Description: Present a clear definition of a triangle, emphasizing its three sides and three angles. A simple triangle is drawn centrally with labels for each vertex, side, and angle.
+    Scene Layout: Place the triangle in the center of the screen, ensuring a 0.5 unit safe area margin on each edge. Text labels for vertices and sides appear around the triangle, each positioned with a minimum spacing of 0.3 units from one another to maintain clarity.
+    </SCENE_1>
+
+    <SCENE_2>
+    Scene Title: Triangle Types
+    Scene Purpose: Explain classifications based on side lengths (equilateral, isosceles, scalene); build logically from the basic triangle introduction.
+    Scene Description: Display three distinct triangles side-by-side—each representing equilateral, isosceles, and scalene triangles. Each triangle is accompanied by a brief description and annotation of its side length properties.
+    Scene Layout: Arrange the triangles horizontally across the screen within the safe 0.5 unit margin. Each triangle is spaced by at least 0.3 units from its neighbors. Labels and descriptions are positioned either below or beside each triangle to ensure visual balance and clear separation.
+    </SCENE_2>
+
+    <SCENE_3>
+    Scene Title: Angle Variations
+    Scene Purpose: Illustrate how triangles are classified by their angles (acute, right, obtuse); this extends the viewer’s understanding of triangle properties.
+    Scene Description: Show three triangles, each showcasing one of the angle types. Highlight the right angle with a square marker, emphasize acute angles with small arcs, and use an extended arc for the obtuse angle. Include annotations explaining the properties of each type.
+    Scene Layout: Divide the screen into three sections, one for each triangle, ensuring every section respects the 0.5 unit safe area margin. Maintain a minimum of 0.3 units spacing between triangles and annotations. Markers and arcs are placed clearly close to the corresponding angles without overlapping.
+    </SCENE_3>
+
+    <SCENE_4>
+    Scene Title: Angle Sum
+    Scene Purpose: Demonstrate the triangle angle sum theorem (that the interior angles add up to 180°) by connecting prior discussions on angles.
+    Scene Description: Use a dynamic depiction where a triangle’s angles are highlighted and rearranged visually to form a straight line representing 180°. Include step-by-step annotations that reveal how each angle contributes to the total sum.
+    Scene Layout: Centralize the triangle within the safe area margins, ensuring all annotations are clearly positioned around it with at least 0.3 units gap between each element. The animation focuses on a single triangle, with additional text on the periphery explaining each step.
+    </SCENE_4>
+
+    <SCENE_5>
+    Scene Title: Area Formulas
+    Scene Purpose: Explain how to compute the area of triangles using different formulas (base-height and Heron’s), integrating previous discussions on triangle properties.
+    Scene Description: Present two visual panels side-by-side; one demonstrates calculating the area using the base-height method, and the other shows Heron’s formula through a worked example. Include step-by-step breakdowns and annotations that simplify the process.
+    Scene Layout: Split the screen vertically into two panels that both maintain a 0.5 unit safe area from the screen edges. Ensure there is a 0.3 unit gap between the panels. Each panel clearly displays its respective triangle drawing, formulas, and procedural steps without overcrowding.
+    </SCENE_5>
+</SCENE_OUTLINE>

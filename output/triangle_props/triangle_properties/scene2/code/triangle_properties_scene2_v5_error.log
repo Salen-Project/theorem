@@ -1,0 +1,147 @@
+
+Error in attempt 0:
+╭─────────────────────────────── Traceback (most recent call last) ────────────────────────────────╮
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/mutagen/_util.py:251 in _openfile │
+│                                                                                                  │
+│    248 │   │                                                                                     │
+│    249 │   │   inmemory_fileobj = False                                                          │
+│    250 │   │   try:                                                                              │
+│ ❱  251 │   │   │   fileobj = open(filename, "rb+" if writable else "rb")                         │
+│    252 │   │   except IOError as e:                                                              │
+│    253 │   │   │   if writable and e.errno == errno.EOPNOTSUPP:                                  │
+│    254 │   │   │   │   # Some file systems (gvfs over fuse) don't support opening                │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+FileNotFoundError: [Errno 2] No such file or directory: 'dummy_voiceover_cache'
+
+During handling of the above exception, another exception occurred:
+
+╭─────────────────────────────── Traceback (most recent call last) ────────────────────────────────╮
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/manim/cli/render/commands.py:120  │
+│ in render                                                                                        │
+│                                                                                                  │
+│   117 │   │   │   try:                                                                           │
+│   118 │   │   │   │   with tempconfig({}):                                                       │
+│   119 │   │   │   │   │   scene = SceneClass()                                                   │
+│ ❱ 120 │   │   │   │   │   scene.render()                                                         │
+│   121 │   │   │   except Exception:                                                              │
+│   122 │   │   │   │   error_console.print_exception()                                            │
+│   123 │   │   │   │   sys.exit(1)                                                                │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/manim/scene/scene.py:229 in       │
+│ render                                                                                           │
+│                                                                                                  │
+│    226 │   │   """                                                                               │
+│    227 │   │   self.setup()                                                                      │
+│    228 │   │   try:                                                                              │
+│ ❱  229 │   │   │   self.construct()                                                              │
+│    230 │   │   except EndSceneEarlyException:                                                    │
+│    231 │   │   │   pass                                                                          │
+│    232 │   │   except RerunSceneException as e:                                                  │
+│                                                                                                  │
+│ /home/neo/dev/salen/theorem/output/triangle_props/triangle_properties/scene2/code/triangle_prope │
+│ rties_scene2_v5.py:87 in construct                                                               │
+│                                                                                                  │
+│    84 │   │   title = Tex("Triangle Types", font_size=28, color=TEAL_C)                          │
+│    85 │   │   title.to_edge(UP, buff=0.5)                                                        │
+│    86 │   │   # Voiceover for title introduction.                                                │
+│ ❱  87 │   │   with self.voiceover(text="Welcome to Scene 2: Triangle Types. In this section, w   │
+│    88 │   │   │   self.play(Write(title), run_time=1.5)                                          │
+│    89 │   │   │   self.wait(0.5)                                                                 │
+│    90                                                                                            │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/contextlib.py:137 in __enter__                  │
+│                                                                                                  │
+│   134 │   │   # they are only needed for recreation, which is not possible anymore               │
+│   135 │   │   del self.args, self.kwds, self.func                                                │
+│   136 │   │   try:                                                                               │
+│ ❱ 137 │   │   │   return next(self.gen)                                                          │
+│   138 │   │   except StopIteration:                                                              │
+│   139 │   │   │   raise RuntimeError("generator didn't yield") from None                         │
+│   140                                                                                            │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/manim_voiceover/voiceover_scene.p │
+│ y:187 in voiceover                                                                               │
+│                                                                                                  │
+│   184 │   │                                                                                      │
+│   185 │   │   try:                                                                               │
+│   186 │   │   │   if text is not None:                                                           │
+│ ❱ 187 │   │   │   │   yield self.add_voiceover_text(text, **kwargs)                              │
+│   188 │   │   │   elif ssml is not None:                                                         │
+│   189 │   │   │   │   yield self.add_voiceover_ssml(ssml, **kwargs)                              │
+│   190 │   │   finally:                                                                           │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/manim_voiceover/voiceover_scene.p │
+│ y:70 in add_voiceover_text                                                                       │
+│                                                                                                  │
+│    67 │   │   │   )                                                                              │
+│    68 │   │                                                                                      │
+│    69 │   │   dict_ = self.speech_service._wrap_generate_from_text(text, **kwargs)               │
+│ ❱  70 │   │   tracker = VoiceoverTracker(self, dict_, self.speech_service.cache_dir)             │
+│    71 │   │   self.renderer.skip_animations = self.renderer._original_skipping_status            │
+│    72 │   │   self.add_sound(str(Path(self.speech_service.cache_dir) / dict_["final_audio"]))    │
+│    73 │   │   self.current_tracker = tracker                                                     │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/manim_voiceover/tracker.py:49 in  │
+│ __init__                                                                                         │
+│                                                                                                  │
+│    46 │   │   self.scene = scene                                                                 │
+│    47 │   │   self.data = data                                                                   │
+│    48 │   │   self.cache_dir = cache_dir                                                         │
+│ ❱  49 │   │   self.duration = get_duration(Path(cache_dir) / self.data["final_audio"])           │
+│    50 │   │   # last_t = scene.last_t                                                            │
+│    51 │   │   last_t = scene.renderer.time                                                       │
+│    52 │   │   if last_t is None:                                                                 │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/manim_voiceover/modify_audio.py:2 │
+│ 2 in get_duration                                                                                │
+│                                                                                                  │
+│   19                                                                                             │
+│   20                                                                                             │
+│   21 def get_duration(path: str) -> float:                                                       │
+│ ❱ 22 │   audio = MP3(path)                                                                       │
+│   23 │   return audio.info.length                                                                │
+│   24 │   # return sox.file_info.duration(path)                                                   │
+│   25                                                                                             │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/mutagen/_file.py:48 in __init__   │
+│                                                                                                  │
+│    45 │   │   │   warnings.warn("FileType constructor requires a filename",                      │
+│    46 │   │   │   │   │   │     DeprecationWarning)                                              │
+│    47 │   │   else:                                                                              │
+│ ❱  48 │   │   │   self.load(*args, **kwargs)                                                     │
+│    49 │                                                                                          │
+│    50 │   @loadfile()                                                                            │
+│    51 │   def load(self, filething, *args, **kwargs):                                            │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/mutagen/_util.py:154 in wrapper   │
+│                                                                                                  │
+│    151 │   │   def wrapper(self, *args, **kwargs):                                               │
+│    152 │   │   │   filething, filename, fileobj, args, kwargs = \                                │
+│    153 │   │   │   │   convert_file_args(args, kwargs)                                           │
+│ ❱  154 │   │   │   with _openfile(self, filething, filename, fileobj,                            │
+│    155 │   │   │   │   │   │      writable, create) as h:                                        │
+│    156 │   │   │   │   return func(self, h, *args, **kwargs)                                     │
+│    157                                                                                           │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/contextlib.py:137 in __enter__                  │
+│                                                                                                  │
+│   134 │   │   # they are only needed for recreation, which is not possible anymore               │
+│   135 │   │   del self.args, self.kwds, self.func                                                │
+│   136 │   │   try:                                                                               │
+│ ❱ 137 │   │   │   return next(self.gen)                                                          │
+│   138 │   │   except StopIteration:                                                              │
+│   139 │   │   │   raise RuntimeError("generator didn't yield") from None                         │
+│   140                                                                                            │
+│                                                                                                  │
+│ /home/neo/miniconda3/envs/theorem/lib/python3.12/site-packages/mutagen/_util.py:272 in _openfile │
+│                                                                                                  │
+│    269 │   │   │   │   except IOError as e2:                                                     │
+│    270 │   │   │   │   │   raise MutagenError(e2)                                                │
+│    271 │   │   │   else:                                                                         │
+│ ❱  272 │   │   │   │   raise MutagenError(e)                                                     │
+│    273 │   │                                                                                     │
+│    274 │   │   with fileobj as fileobj:                                                          │
+│    275 │   │   │   yield FileThing(fileobj, filename, filename)                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+MutagenError: [Errno 2] No such file or directory: 'dummy_voiceover_cache'
+

@@ -1,0 +1,104 @@
+<SCENE_TECHNICAL_IMPLEMENTATION_PLAN>
+0. **Dependencies**:
+    - **Manim API Version**: Target the latest stable Manim Community Edition release.
+    - **Allowed Imports**: Import from "manim" and "numpy". No external assets are used.
+    - **Plugin Use**: None required for this scene. (If advanced sliding transitions are desired, consider "manim_sliding_mobject", but for clarity we stick to built-in animations.)
+    
+1. **Manim Object Selection & Configuration (Text and Shapes)**:
+    - Title Text:
+        • Object: Tex("Angle Sum Theorem")
+        • Font Size: 28 (preset or scaled within Tex)
+        • Position: To be placed at the top-center using .to_edge(UP, buff=0.5); ensures a 0.3 unit gap from subsequent elements.
+        • Animation: Introduced using FadeIn with run_time=1.5.
+    - Triangle Representation:
+        • Object: Polygon
+            - Create a non-equilateral triangle by providing three distinct vertices.
+            - Vertices must be defined relative to ORIGIN and adjusted to guarantee a 0.5 unit safe margin from scene edges.
+        • Animation: Draw the triangle using Create with run_time=2.
+        • Position: Centered via .move_to(ORIGIN) and placed at least 0.3 units below the title.
+    - Angle Markers (Arcs & Labels):
+        • Objects for Angles:
+            - Three Arc objects, each with a radius (e.g., 0.4) to represent the interior angles.
+            - Labels: Three MathTex objects, e.g., MathTex(r"\alpha"), MathTex(r"\beta"), MathTex(r"\gamma").
+            - Each label is positioned with .next_to() its corresponding arc and buffered by at least 0.3 units.
+        • Animation: Introduce arcs and labels sequentially with FadeIn (run_time=1 per marker).
+        • Consideration: Use relative positioning so that no arc or text bounding box overflows the safe area.
+    - 180° Annotation:
+        • Object: MathTex(r"180^\circ")
+        • Position: Placed next to (or below/above) the rearranged angle-line with .next_to() ensuring a minimum 0.3 unit gap.
+        • Font Size: Recommended 24.
+        • Animation: Added with Write.
+    - Final Expression:
+        • Object: MathTex(r"\alpha+\beta+\gamma=180^\circ")
+        • Placement: Positioned relative to the assembled straight line using .next_to() with buff>=0.3.
+        • Animation: Run Write with run_time=1.5.
+
+2. **VGroup Structure & Hierarchy**:
+    - Groupings:
+        • triangle_group: VGroup containing the Polygon (triangle) and its associated arc markers.
+        • angle_arcs_group: VGroup holding the three Arc objects and their labels to enable coordinated movement.
+        • equation_group: VGroup for the assembled line of angles and the MathTex("180^\circ") annotation.
+    - Internal Grouping:
+        • Each VGroup is configured to maintain an internal spacing of at least 0.3 units between its constituent objects.
+        • This ensures that during transformations (Transform or MoveToTarget), elements do not overlap or exceed safe area margins.
+
+3. **Spatial Positioning Strategy**:
+    - General Rules:
+        • All objects use relative positioning. For instance, title placement is done using .to_edge(UP, buff=0.5) and the triangle is centered with .move_to(ORIGIN).
+        • All placements use methods like .next_to(), .shift(), and .align_to() where the buff parameter is set to 0.3 units (minimum spacing) from adjacent objects.
+        • Every object’s bounding box (including multi-line text) is checked to remain inside the safe area (at least 0.5 units from scene boundaries).
+    - Specific Examples:
+        • The triangle is placed at the ORIGIN but verified not to exceed 0.5 units near any edge using margin checks.
+        • The title’s bottom edge is at least 0.3 units from the triangle’s top.
+        • During the angle rearrangement, each arc is moved away from the triangle with a buffer of 0.3 units, forming a horizontal line centered below or above the triangle.
+    - Safety for Text Bounding Boxes:
+        • Incorporate checks with methods (such as get_bounding_box) to ensure that text (MathTex or Tex) does not overflow. If needed, reduce font size or break text into multiple lines.
+        • Use relative positioning to avoid overlap with already defined objects.
+
+4. **Animation Methods & Object Lifecycle Management**:
+    - Animation Sequences:
+        • Title Introduction: FadeIn(Tex("Angle Sum Theorem"), run_time=1.5) then Wait(1).
+        • Triangle Drawing: Create(Polygon(...), run_time=2); ensure triangle is positioned 0.3 units below the title.
+        • Angle Markers: For each vertex, FadeIn(Arc(...), run_time=1) and concurrently FadeIn(MathTex(...)) for labels; wait 0.5 seconds after all markers are in place.
+        • Dissecting & Rearrangement:
+            - Copy the angle_arcs_group into a new VGroup for transformation.
+            - Use Transform or MoveToTarget to slide the first arc to the left (relative to ORIGIN) with .next_to(triangle_group, direction=LEFT, buff=0.3).
+            - Subsequent arcs are arranged with .next_to() (RIGHT) and adjusted to form a seamless horizontal line.
+            - Simultaneously, Write(MathTex("180^\circ"), run_time=1) next to the arranged arcs.
+            - Wait 1 second after transformation.
+        • Final Annotation:
+            - Use Circumscribe on the rearranged VGroup (with run_time=1) to highlight the complete angle line.
+            - Then Write the final expression MathTex(r"\alpha+\beta+\gamma=180^\circ") positioned using .next_to() (with buff=0.3).
+            - Wait 1 second after the annotation.
+        • Final Transition:
+            - Use FadeOut for all objects (angle markers, triangle and annotation) ensuring all objects fade simultaneously and remain within safe area margins.
+            - End with Wait(2) seconds for scene conclusion.
+    
+5. **Code Structure & Reusability**:
+    - Modular Functions:
+        • Create functions such as create_triangle(), create_angle_marker(vertex), and arrange_angles() to encapsulate repeated patterns.
+        • Each function includes detailed inline comments explaining the rationale, referencing Manim’s documentation for classes like Polygon, Arc, VGroup, and the usage of position methods.
+    - Logical Sections:
+        • Section 0: Define dependencies and import statements.
+        • Section 1: Object definitions – title, triangle, arcs, labels, and final annotations.
+        • Section 2: Arrangement and grouping using VGroup for coordinated transformations.
+        • Section 3: Animation sequences in the main construct() method with clearly placed Wait() calls for transition buffers.
+    - Inline Comments:
+        • Each animation and positioning call is accompanied by a comment, e.g., "Positioning triangle 0.3 units below title ensuring safe margin" to ensure maintainability.
+
+***Mandatory Safety Checks***:
+    - Safe Area Enforcement: Every Manim object (Triangle, Arcs, Text) is initially placed relative to ORIGIN and aligned to safe margins using .to_edge() with buff=0.5.
+    - Minimum Spacing Validation: Utilize .next_to() with buff=0.3 to ensure that no two objects (including text bounding boxes) overlap.
+    - Transition Buffers: Insert explicit Wait() calls (e.g., Wait(1) or Wait(0.5)) between animation sequences to allow the viewer to process each step and ensure objects remain non-overlapping during transitions.
+    
+Diagrams/Sketches (Text-Based Example):
+    - Title: "Angle Sum Theorem" centered at the top edge (UP) with a 0.5 unit buffer.
+    - Triangle: Centered at ORIGIN; below the title with at least a 0.3 unit vertical gap.
+    - Angle Markers: Arcs at each vertex of the triangle.
+    - Rearranged Angles: A horizontal row aligned left-to-right, positioned such that:
+           [ Arc(\alpha) ] --0.3--> [ Arc(\beta) ] --0.3--> [ Arc(\gamma) ]
+      with the MathTex "180°" placed next to or below this horizontal line with a 0.3 unit gap.
+    - Final Expression: Below the rearranged line, ensuring another 0.3 unit gap.
+    
+This detailed plan outlines the spatially accurate, pedagogically informed Manim code structure for Scene 4 on the Triangle Angle Sum theorem while enforcing safe area margins and minimum spacing requirements.
+</SCENE_TECHNICAL_IMPLEMENTATION_PLAN>

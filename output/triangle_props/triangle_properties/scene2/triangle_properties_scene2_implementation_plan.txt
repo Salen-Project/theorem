@@ -1,0 +1,242 @@
+# Scene 2 Implementation Plan
+
+<SCENE_VISION_STORYBOARD_PLAN>
+[SCENE_VISION]
+1.  **Scene Overview**:
+    - This scene, titled "Triangle Types", introduces three classifications of triangles: equilateral, isosceles, and scalene. It builds logically on the basic introduction of triangles and emphasizes their side-length properties.
+    - **Visual learning objectives for viewers:** 
+         - Represent each triangle using Manim's geometric primitives. For the equilateral triangle, use the default Triangle class. For the isosceles and scalene triangles, use the Polygon class to ensure control over side lengths.
+         - Use `Tex` to label each triangle (e.g., "Equilateral", "Isosceles", "Scalene") and to provide brief side-length property descriptions, ensuring clarity while limiting text.
+         - Position triangles inside a safe area (0.5 units margin on every side) with a minimum spacing of 0.3 units (edge-to-edge) between each triangle and accompanying texts.
+         - Use `VGroup` to group each triangle with its description for simpler relative positioning during animations.
+    - How Manim visuals & animations support learning? 
+         - Each triangle is created and arranged horizontally using relative positioning methods (`next_to`, `align_to`, `shift`), ensuring that no object is placed outside the safe area margins.
+         - Visual annotations with `Tex` provide immediate textual context next to the relevant triangle, supporting cognitive linking between the visual shape and its geometric classification.
+         - Smooth animations (`Create`, `FadeIn`, `Write`) will introduce each triangle sequentially with clear transition pauses (`Wait()`) to help learners absorb the classifications.
+    - Key concepts to emphasize visually:
+         - Triangle side length equality and inequality: Visual differentiation is achieved by drawing distinct side lengths.
+         - Maintain spatial clarity and hierarchy: The title, triangles, and labels are all arranged relative to the scene's center (ORIGIN) and safe margins, with careful use of `VGroup` to enforce the minimum spacing of 0.3 units.
+         - **Note:** Utilize `MathTex` only when incorporating any mathematical symbols or expressions, while `Tex` handles all descriptive labels.
+
+[STORYBOARD]
+1.  **Visual Flow & Pacing (Manim Animation Sequence)**:
+    - Begin with a title introduction using `Tex` that reads "Triangle Types", positioned at the top center relative to the ORIGIN but shifted downward to respect the 0.5 unit safe top margin. Animate with a `Write` animation (run_time=1.5).
+    - **Sub-scene 1: Equilateral Triangle**
+         - Visual Element: Create an equilateral triangle using the Manim `Triangle` class.
+         - Animation Sequence:
+             a. Instantiate the equilateral triangle and group it with its label using `VGroup`. The label is a `Tex` object reading "Equilateral: All sides equal" placed directly below the triangle (using `.next_to()` with a DOWN direction and a buffer of at least 0.3 units).
+             b. Position this VGroup relative to the left safe margin by aligning its left edge with the safe margin (using `.to_edge(LEFT)` shifted right by 0.5 units).
+             c. Animate with `Create` for the triangle and `Write` for the label concurrently (run_time=1.5).
+         - Ensure that the triangle and its label maintain a minimum spacing of 0.3 units between the triangle’s boundaries and the text.
+         - Include a short `Wait(1)` before transitioning to the next sub-scene.
+         
+    - **Sub-scene 2: Isosceles Triangle**
+         - Visual Element: Construct an isosceles triangle using the Manim `Polygon` class to define two equal sides.
+         - Animation Sequence:
+             a. Create the isosceles triangle and form a `VGroup` with its accompanying label, a `Tex` reading "Isosceles: Two sides equal", positioned below the triangle with `.next_to()` (with a 0.3 unit gap).
+             b. Position this VGroup to the right of the equilateral triangle's VGroup, ensuring a relative spacing of at least 0.3 units between the two groups.
+             c. Animate using `Create` for the triangle and `Write` for the label (run_time=1.5).
+         - Confirm that the new VGroup is fully within the safe area margins without overlapping the previous sub-scene.
+         - Insert a `Wait(1)` transition buffer.
+         
+    - **Sub-scene 3: Scalene Triangle**
+         - Visual Element: Instantiate a scalene triangle via the `Polygon` class with all sides of different lengths.
+         - Animation Sequence:
+             a. Draw the scalene triangle and create its descriptive VGroup with a `Tex` label "Scalene: All sides different", positioned below the triangle using `.next_to()` with the required 0.3 unit separation.
+             b. Place this VGroup to the right of the isosceles triangle's group, ensuring that the gap between VGroups equals or exceeds the minimum spacing of 0.3 units.
+             c. Animate with `Create` for the scalene triangle and `Write` for the text (run_time=1.5).
+         - Verify that this last element is aligned along the horizontal arrangement, respecting the safe 0.5 unit right margin.
+         - Use a final `Wait(2)` to allow viewers to absorb the layout before potentially transitioning to the next scene.
+         
+2.  **Additional Animation Details & Transitions**:
+    - Utilize relative positioning methods (`next_to()`, `.shift()`) throughout to guarantee that all objects (triangles and labels) are never placed outside the 0.5 unit safe area margins.
+    - Ensure that regardless of scene size adjustments, every object maintains the minimum 0.3 unit spacing from its adjacent objects (by measuring edge-to-edge using their bounding boxes).
+    - Each sub-scene transition includes a brief pause using `Wait()` to allow the learner to process the information visually before moving on.
+    - **Plugin Suggestion:** Consider using the `manim-slides` plugin if the implementation requires advanced sequencing of sub-scenes, though it is not mandatory as relative methods suffice.
+    
+</SCENE_VISION_STORYBOARD_PLAN>
+
+<SCENE_TECHNICAL_IMPLEMENTATION_PLAN>
+0. **Dependencies**:
+    - **Manim API Version**: Target the latest stable Manim CE release.
+    - **Allowed Imports**: 
+         • Import from "manim" (e.g., Scene, Triangle, Polygon, Tex, VGroup, Create, Write, FadeIn, Wait).
+         • Import "numpy" if needed for coordinate computations.
+         • No external assets are used.
+    
+1. **Manim Object Selection & Configuration (Text and Shapes)**:
+    - **Triangle Objects**:
+         • Equilateral Triangle: Use Manim’s default Triangle class (creates an equilateral triangle by default).
+         • Isosceles Triangle: Use the Polygon class with three vertices chosen so that exactly two sides are equal.
+         • Scalene Triangle: Use the Polygon class with three distinct side lengths (each side length is different).
+    - **Text Labels & Title**:
+         • Title: A Tex object with content "Triangle Types" and font size ~28. It is used to introduce the scene.
+         • Labels for triangles: 
+              - "Equilateral: All sides equal" for the equilateral triangle.
+              - "Isosceles: Two sides equal" for the isosceles triangle.
+              - "Scalene: All sides different" for the scalene triangle.
+           Use Tex objects with font size ~24 (or smaller if the text wraps to multiple lines).
+    - **General Configuration**:
+         • All objects must be constrained within a safe area margin of 0.5 units from every scene edge.
+         • Minimum spacing between any two objects (including triangle shapes and text bounding boxes) is enforced at 0.3 units.
+         • Ensure that text bounding boxes are checked relative to the triangle objects, especially when text spans multiple lines to avoid overflow.
+    
+2. **VGroup Structure & Hierarchy**:
+    - Create three primary VGroups:
+         • equilateral_group: Contains the equilateral triangle and its Tex label. Use VGroup(equilateral_triangle, equilateral_label).
+         • isosceles_group: Contains the isosceles triangle (constructed via Polygon) and its corresponding Tex label.
+         • scalene_group: Contains the scalene triangle (constructed via Polygon) and its corresponding Tex label.
+    - Each VGroup is structured to keep the triangle and its description together such that the label is positioned below its corresponding triangle with a buffer of at least 0.3 units using .next_to(triangle, DOWN, buff=0.3).
+    - Grouping ensures relative positioning is maintained when animating into the scene.
+    
+3. **Spatial Positioning Strategy**:
+    - **Title Positioning**:
+         • Position the title at the top center relative to ORIGIN.
+         • Use .to_edge(UP, buff=0.5) to maintain the 0.5 unit safe area at the top.
+    - **Triangle Groups Positioning**:
+         • Equilateral Group:
+              - Position using .to_edge(LEFT, buff=0.5) so that its left boundary respects the safe area.
+         • Isosceles Group:
+              - Position relative to the equilateral_group using next_to(equilateral_group, RIGHT, buff=0.3) ensuring edge-to-edge spacing is maintained.
+         • Scalene Group:
+              - Position relative to the isosceles_group using next_to(isosceles_group, RIGHT, buff=0.3). Further, check that after placement, the right boundary is within the 0.5 units margin (using .shift or .to_edge(RIGHT, buff=0.5) if needed).
+    - **Safe Area and Buffer Check**:
+         • All objects’ bounding boxes are measured explicitly to avoid overflow: verify that even the multi-line text descriptions do not exceed the safe margins.
+         • Use relative positioning (next_to, align_to, shift) exclusively with reference to previous groups, ORIGIN, or safe edge objects.
+    
+4. **Animation Methods & Object Lifecycle Management**:
+    - **Animation Sequence**:
+         • Title Animation:
+              - Use Write(title) with run_time=1.5 to introduce the title.
+         • Sub-scene 1 (Equilateral Triangle):
+              a. Instantiate the equilateral triangle and its label, group them in equilateral_group.
+              b. Animate the triangle with Create(equilateral_triangle) and simultaneously Write(equilateral_label) for run_time=1.5.
+              c. After displaying, run Wait(1) as a transition buffer.
+         • Sub-scene 2 (Isosceles Triangle):
+              a. Instantiate the isosceles triangle and its label; group them in isosceles_group.
+              b. Position isosceles_group to the right of equilateral_group with a .next_to( ..., RIGHT, buff=0.3) call.
+              c. Animate with Create(isosceles_triangle) and Write(isosceles_label) concurrently (run_time=1.5).
+              d. Run Wait(1) after the animation.
+         • Sub-scene 3 (Scalene Triangle):
+              a. Instantiate the scalene triangle and its Tex label; group into scalene_group.
+              b. Position scalene_group to the right of isosceles_group via .next_to(isosceles_group, RIGHT, buff=0.3) ensuring the group lies within the right safe margin.
+              c. Animate using Create(scalene_triangle) and Write(scalene_label) with run_time=1.5.
+              d. Finalize with Wait(2) to allow viewer absorption.
+    - **Transition Buffers & Safety Checks**:
+         • Insert explicit Wait() calls between sub-scenes to avoid visual clutter.
+         • Confirm during each animation stage that objects do not migrate outside the safe 0.5 unit margin and remain spaced by at least 0.3 units edge-to-edge.
+    
+5. **Code Structure & Reusability**:
+    - **Modular Functions**:
+         • Create helper functions for repetitive tasks such as "create_triangle_group(triangle_object, label_text)" to instantiate a VGroup that positions the label below the triangle.
+         • These functions will encapsulate both the object creation and the relative positioning logic (e.g., .next_to(triangle, DOWN, buff=0.3)).
+    - **Logical Sections in Code**:
+         • Begin with dependency imports.
+         • Define object creation blocks (title, triangle groups).
+         • Position each element using relative positioning methods.
+         • Organize the main construct() method to sequentially animate the introduction of objects.
+    - **Inline Comments**:
+         • Provide comments explaining decisions such as:
+              - "Positioning relative to safe margin using .to_edge(LEFT, buff=0.5)"
+              - "Ensuring at least 0.3 unit spacing between VGroups with next_to(..., buff=0.3)"
+              - "Using Create and Write for clear visual transitions."
+    
+***Mandatory Safety Checks***:
+    - **Safe Area Enforcement**: Every object (triangle shapes and text) initiates and remains within a 0.5 unit safe margin on all sides. This is achieved by starting objects at safe positions (e.g., .to_edge approaches) and verifying with bounding box measurements.
+    - **Minimum Spacing Validation**: Use next_to(…, buff=0.3) between all adjacent objects (e.g., triangle and label, successive VGroups) to enforce a minimum edge-to-edge spacing of 0.3 units.
+    - **Transition Buffers**: Explicit Wait() calls (1 second between subscenes and 2 seconds at the end) are used so that each scene component is visually separate and easily digestible.
+    
+</SCENE_TECHNICAL_IMPLEMENTATION_PLAN>
+
+<SCENE_ANIMATION_NARRATION_PLAN>
+
+[ANIMATION_STRATEGY]
+1. **Pedagogical Animation Plan:**
+    - For this scene, we structure the animation in three clear sub-sections, each dedicated to one type of triangle. Each sub-section uses a VGroup that couples a triangle shape with its descriptive label. The following details the sequence and rationale for each animation:
+    
+    • Parent VGroup Transitions:
+        - We create three VGroups: "equilateral_group", "isosceles_group", and "scalene_group". Each VGroup is animated in sequence from left to right.
+        - The equilateral_group is positioned using .to_edge(LEFT, buff=0.5); the isosceles_group is positioned with next_to(equilateral_group, RIGHT, buff=0.3); the scalene_group is placed via next_to(isosceles_group, RIGHT, buff=0.3) ensuring that each group remains within the safe margin (0.5 units from the scene’s sides) and that the minimum spacing (0.3 units) is enforced.
+        - Pedagogical Rationale: By grouping the triangle with its label and spacing them horizontally, the viewer is guided to compare properties visually from left to right. This separation in layout reinforces the differences among triangle types.
+
+    • Element Animations within VGroups and for Individual Mobjects:
+        - Title Animation:
+            • Use a Tex object for the title "Triangle Types". Position it at the top center using .to_edge(UP, buff=0.5).
+            • Animation: Write(title) with run_time=1.5.
+            • Pedagogical Purpose: This introduces the scene’s theme clearly and immediately, orienting the learner.
+        
+        - Equilateral Triangle (Sub-scene 1):
+            • Create an equilateral triangle using the default Triangle class.
+            • Label: A Tex object reading "Equilateral: All sides equal", placed below the triangle using .next_to(triangle, DOWN, buff=0.3).
+            • Grouping: Combine the triangle and label into a VGroup (equilateral_group) and position it on the left via .to_edge(LEFT, buff=0.5).
+            • Animations: Use Create(equilateral_triangle) and Write(equilateral_label) concurrently with run_time=1.5.
+            • Pedagogical Purpose: Introducing with a simple geometric shape, the animation visually emphasizes equality in side length, reinforcing the concept through immediate visual association.
+            • Transition Buffer: Wait(1) is then inserted to let the learner absorb this information.
+        
+        - Isosceles Triangle (Sub-scene 2):
+            • Construct this triangle using the Polygon class with two equal sides.
+            • Label: "Isosceles: Two sides equal" is created as a Tex object placed below the triangle.
+            • Grouping: Combine into isosceles_group, positioned using next_to(equilateral_group, RIGHT, buff=0.3).
+            • Animations: Use Create(isosceles_triangle) with Write(isosceles_label) concurrently with run_time=1.5.
+            • Pedagogical Purpose: The slight variation in side lengths, when compared side-by-side with the equilateral one, helps viewers notice subtle differences and understand the idea of “two sides equal.”
+            • Transition Buffer: Wait(1) is provided after the animation.
+        
+        - Scalene Triangle (Sub-scene 3):
+            • Construct a scalene triangle through the Polygon class ensuring all sides are different.
+            • Label: "Scalene: All sides different" appears as a Tex object positioned below the triangle.
+            • Grouping: Combine into scalene_group, positioned using next_to(isosceles_group, RIGHT, buff=0.3) and adjusted if needed to remain within the right safe margin (0.5 units).
+            • Animations: Use Create(scalene_triangle) and Write(scalene_label) concurrently with run_time=1.5.
+            • Pedagogical Purpose: Highlighting the distinct side lengths, this final animation consolidates the comparison among triangle types.
+            • Final Pause: Wait(2) is given for learners to review and assimilate the visual distinctions.
+    
+    - **Coordination and Synchronization:**
+        • Throughout, relative positioning methods (next_to, to_edge, shift) are used to enforce spatial coherence and guarantee that no element overlaps the safe area margins (0.5 units) or violates the minimum spacing (0.3 units).
+        • Each animation uses explicit run_time values and Wait() calls to establish a clear pace. For example, 1.5 seconds for writing and creating elements and 1–2 seconds pause after each sub-scene provide time for reflection.
+        • Pedagogical Rationale: By carefully timing each transition and synchronizing VGroup animations with the narration cues (described below), we ensure the viewer’s attention is maintained and each concept is given adequate processing time.
+
+2. **Scene Flow - Pedagogical Pacing and Clarity:**
+    - Overall Animation Sequence and Spatial Progression:
+        • The scene opens with a title at the top center, immediately signaling the topic ("Triangle Types").
+        • Next, the equilateral triangle VGroup appears on the left edge, establishing a baseline with clear geometric uniformity.
+        • Subsequently, the isosceles and scalene VGroups appear one by one to the right, each introduced after a brief pause to highlight differences in side lengths and aid comparison.
+        • The left-to-right ordering reinforces logical progression and visual hierarchy.
+    - Transition Buffers:
+        • Wait(1) after the equilateral and isosceles groups, and Wait(2) after the scalene group ensure that learners have dedicated periods to understand each triangle type before moving to the next.
+        • Pedagogical Reason: These transitions prevent cognitive overload, allowing time for the viewer to internalize each concept.
+    - Coordination of Narration and Animation:
+        • The narration is carefully synchronized with the animation timeline. For instance, as the equilateral triangle is drawn and its label is written, the narration explains its properties. Similarly, when transitioning to the isosceles and scalene triangles, the narration cues and pauses are aligned with the Wait() times.
+        • The narration includes explicit cues such as “Now, notice how…” or “Let’s examine…” to guide attention exactly when the animation brings key details into view.
+        • Pedagogical Impact: This synchronization ensures that visual and auditory information reinforces each other, maximizing engagement and retention.
+
+[NARRATION]
+- **Pedagogical Narration Script:**
+
+    [Start Title Animation, run_time=1.5]
+    "Welcome to Scene 2: Triangle Types. In this section, we explore how triangles are classified based on their side lengths. Notice the clear title up top, which introduces the topic and sets the stage for what’s to come."
+
+    [As the equilateral triangle appears with Create() and its label is written]
+    "Let’s begin with the equilateral triangle. Observe that all three sides are perfectly equal. This uniformity is one of the simplest and most symmetric properties in geometry, making it a natural starting point. Imagine a perfectly balanced three-legged stool, where each leg is exactly the same length—this is your equilateral triangle."
+
+    [Wait(1) as the animation pauses briefly]
+    "Take a moment to appreciate the symmetry here."
+
+    [As the isosceles triangle is drawn and its label appears next to the equilateral group]
+    "Next, we move to the isosceles triangle. Unlike the equilateral triangle, only two sides are equal here. Think of a traditional triangular roof, where perhaps the two sloping sides are the same, but the base differs. This subtle change in side-length equality highlights an important variation in triangle properties."
+
+    [Wait(1) to allow the learner to process the differences]
+    "Notice how the isosceles triangle stands out next to the equilateral one, drawing your attention to the variation in side lengths."
+
+    [As the scalene triangle appears, complete with its descriptive label]
+    "Finally, we come to the scalene triangle, where no two sides are the same length. This type encapsulates the idea of complete variability and asymmetry. Picture a uniquely shaped piece of modern art—each edge is distinct, and there’s no uniformity. This helps emphasize the broad diversity found even within simple geometric shapes."
+
+    [Wait(2) for final reflection]
+    "By comparing these three types side-by-side—the equilateral, isosceles, and scalene triangles—you can see how a simple change in side lengths creates distinct identities. As we continue, think about how these fundamental differences influence other properties, such as angles and areas. Building on what we’ve seen so far, our next discussion will delve deeper into these relationships."
+
+- **Narration Sync - Pedagogical Alignment:**
+    • The narration starts simultaneously with the title’s Write() animation, ensuring that viewers connect the spoken introduction with the visual title.
+    • As each triangle group (equilateral, isosceles, scalene) is animated onto the screen, the lecturer’s voice precisely describes its properties. The narration pauses during Wait() calls to allow a moment of reflection, aligning with the on-screen visual emphasis.
+    • Key phrases such as “Observe,” “Notice,” and “Think of” are timed to coincide with the creation of the shape and the appearance of its label. This synchronization directs attention where it is needed, reinforcing the learning points at optimal moments.
+    • The overall narration transitions smoothly between triangle types, connecting them in a coherent, step-by-step exploration that builds on previous concepts and preps the learner for the subsequent topics.
+
+</SCENE_ANIMATION_NARRATION_PLAN>
+

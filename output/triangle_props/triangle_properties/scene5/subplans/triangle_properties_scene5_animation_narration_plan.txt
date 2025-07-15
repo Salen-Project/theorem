@@ -1,0 +1,74 @@
+<SCENE_ANIMATION_NARRATION_PLAN>
+
+[ANIMATION_STRATEGY]
+1. **Pedagogical Animation Plan:** 
+    - The scene is split vertically into two distinct panels (left_panel for the Base-Height method and right_panel for Heron’s Formula), each contained within a VGroup. All panels and elements respect a 0.5 unit safe area from the screen edges and at least a 0.3 unit gap between objects.
+    - **Parent VGroup Transitions:**
+        • Both left_panel and right_panel are first created and positioned using the .to_edge() and .next_to() functions: 
+            - left_panel is positioned to the left edge (buff=0.5) while right_panel is placed to the right of left_panel with a buff (0.3). 
+        • A FadeIn animation (run_time=1.5 seconds) is applied to each VGroup so that viewers are immediately aware of the two distinct methods.
+        • Pedagogical Rationale: These parent transitions clearly segment the screen visually, enabling learners to focus on one method at a time while also emphasizing the comparative nature of the two approaches.
+    
+    - **Element Animations within VGroups:**
+        • In left_panel – Base-Height Method:
+            - Use Create (run_time=2 seconds) to draw a non-equilateral triangle using the Polygon class. This triangle is drawn fully within the safe area.
+            - Sequentially animate DashedLine objects to highlight the base (colored BLUE) and the corresponding height (colored RED). Each line is positioned relative to the triangle’s vertices using .next_to() (buff=0.3) to maintain spacing.
+            - After the figure is complete, Write (run_time=1.5 seconds) is used to display the MathTex formula "A = \frac{1}{2}bh" just below the triangle, grouped in a VGroup to maintain internal spacing.
+            - A Tex label "Base-Height Method" is written above the triangle using Write (run_time=1.5 seconds) to contextually introduce the approach.
+            - Each element animates in sequence with a Wait(1) following the complete sub-sequence to allow for reflection.
+            - Pedagogical Purpose: By breaking down the triangle into its components (base and height) and then revealing the area formula, learners see a step-by-step derivation making it easier to grasp the formula's origin.
+        
+        • In right_panel – Heron’s Formula:
+            - Use Create (run_time=2 seconds) to draw a non-equilateral triangle with clear side markers labeled “a”, “b”, and “c” using Tex objects. The labels are placed with .next_to() ensuring at least 0.3 unit gap.
+            - With a Write animation (run_time=1.5 seconds), display the intermediary step: MathTex for "s = \frac{a+b+c}{2}" placed below the triangle.
+            - After a Wait(1) pause, use Transform or FadeIn (run_time=1.5 seconds) to transition from the semi-perimeter calculation to the full Heron’s formula MathTex "A = \sqrt{s(s-a)(s-b)(s-c)}", positioned underneath the previous step.
+            - Additionally, a Tex title "Heron’s Formula" is written above the triangle with Write (run_time=1.5 seconds) ensuring coherence with the figure.
+            - Pedagogical Purpose: The progressive revelation from calculating s to applying Heron’s formula helps learners understand how each piece of the calculation contributes to the final area computation.
+    
+    - **Coordination and Synchronization:**
+        • Both panels are introduced simultaneously with careful staggering such that left_panel animations begin slightly ahead of right_panel, guiding the viewer’s eye from the simpler base-height method to the more algebraically involved Heron’s formula.
+        • Animation Groups (using Succession) are created so that the triangle drawing, line highlighting, formula writing, and label annotations are synchronously revealed; each sub-step fades in with clear visible pauses (Wait(1)) to allow processing.
+        • All placement methods (.to_edge(), .next_to(), .shift()) are used relative to the safe area to preserve a minimum 0.5 unit margin between the elements and the panel edges and a 0.3 unit gap between adjacent objects.
+        • Pedagogical Rationale: The synchronized entrance and clear staging help direct focus sequentially, ensuring that learners connect each visual element with its verbal explanation at the optimal moment.
+
+2. **Scene Flow - Pedagogical Pacing and Clarity:**
+    - **Overall Animation Sequence and Spatial Progression:**
+        • The scene is divided into two pedagogical sub-sections:
+            a. "Base-Height Method" (left_panel): Begins with the drawing of the triangle, followed by the annotation of base and height, then the introduction of the area formula (A = ½bh) and a brief title labeling.
+            b. "Heron’s Formula" (right_panel): Starts with drawing a triangle marked with sides, then a step-by-step reveal of the semi-perimeter calculation and the full Heron’s formula.
+        • Both sub-scenes are arranged side-by-side ensuring a coherent spatial narrative where learners can visually compare the two methods.
+    
+    - **Transition Buffers for Pedagogical Pauses:**
+        • After completing the base-height animations, a Wait(1) is introduced to let learners assimilate the information before moving to the more complex Heron’s formula.
+        • Similarly, a Wait(1) is used after revealing the semi-perimeter before fully displaying Heron’s formula to create a reflective pause.
+        • Pedagogical Reasoning: These pauses allow cognitive processing of the information, ensuring that learners have sufficient time to absorb each mathematical step.
+    
+    - **Coordination between Animation Timing and Narration:**
+        • Specific narration cues are embedded to coincide with the start of each animation (e.g., “As we see here…” when the triangle is drawn, “Notice the highlighted base and height…” when dashed lines appear).
+        • Each Write, Create, or Transform animation has a clearly defined run_time (1.5–2 seconds), and these times are synchronized with verbal cues designed to reinforce the learning point just as it appears.
+        • Pedagogical Alignment: This precise synchronization ensures that key visuals appear exactly when the lecturer’s voice is emphasizing the corresponding concept, making the learning experience more impactful.
+
+[NARRATION]
+- **Pedagogical Narration Script:**
+    "Welcome to Scene 5, where we explore the different methods for calculating the area of a triangle. In the left panel, notice the triangle—drawn with clear vertices that don’t conform to perfect symmetry. As the triangle appears (cue: triangle drawing animation), focus on the two highlighted segments: the base, painted in blue, and the height, accented in red. These two segments are the building blocks for our familiar area formula, A = ½ × base × height. 
+    [Pause as dashed lines animate – Wait(1)]
+    Now, let’s watch how the area is computed step-by-step. As you see the formula 'A = ½ bh' written below the triangle (cue: formula appear animation), consider how the area scales with each dimension. This method is straightforward, especially when the altitude is clearly marked.
+    [Wait(1) for reflection]
+    Moving to the right panel, we shift our attention to a more algebraic method: Heron’s Formula. Here, a triangle—again non-equilateral—is drawn with all three sides labeled as a, b, and c. Listen closely as the semi-perimeter is introduced. When you see the equation 's = (a+b+c)/2' appear below the triangle (cue: semi-perimeter animation), note that this value, s, serves as an intermediary step that simplifies the area calculation.
+    [Pause as the semi-perimeter is processed – Wait(1)]
+    Building on this, observe the transformation into the full Heron’s formula: A = √[s(s-a)(s-b)(s-c)]. As each element of this formula appears (cue: Transform/FadeIn animation), reflect on how each side of the triangle adjusts the overall area. This method, while seemingly more complex, is particularly useful when the height is not easily determined.
+    [Wait(1) for processing]
+    Having examined both methods side by side, notice how the visual differentiation—using distinct color schemes and step-by-step annotations—helps underline the conceptual differences and similarities in deriving a triangle's area. 
+    As we move on, keep in mind the importance of choosing the right formula based on the information available from a given triangle, a concept that we will build on further in the next scene."
+    
+- **Narration Sync - Pedagogical Alignment:**
+    • The narration is timed to launch concurrently with each animation:
+        - When the triangle is drawn in the left panel, the narration immediately explains the base and height components.
+        - As the dashed lines are animated, the narration emphasizes their role in the area calculation.
+        - The mathematical formula for the base-height method is recited as it appears, reinforcing visual cues with verbal explanation.
+        - Similarly, the transition to the right panel is marked by a slight pause, and the semi-perimeter calculation appears as the narration introduces Heron’s formula.
+        - Each Wait(1) is used intentionally to allow the viewers to process the steps before moving to the next detail.
+    • This tight synchronization ensures that learners’ attention is focused on the key visual elements as they are being explained, thereby maximizing comprehension and retention.
+    • The narration’s phrasing—using transitional phrases like 'Now, let’s move on...' and 'Notice how...'—guides the viewer’s attention from one segment to the next, maintaining a seamless flow between the two calculation methods.
+
+</SCENE_ANIMATION_NARRATION_PLAN>

@@ -1,0 +1,11 @@
+name: theorem
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.12.8
+  - portaudio
+  - pyaudio
+  - pip
+  - pip:
+    - -r requirements.txt

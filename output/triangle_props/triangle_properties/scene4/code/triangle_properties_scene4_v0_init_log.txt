@@ -1,0 +1,146 @@
+<CODE>
+```python
+from manim import *
+from manim import config as global_config
+from manim_voiceover import VoiceoverScene
+from src.utils.kokoro_voiceover import KokoroService  # You MUST import like this as this is our custom voiceover service.
+
+# Plugin imports (if needed – here imported but not used in this scene)
+from manim_circuit import *
+from manim_physics import *
+from manim_chemistry import *
+from manim_dsa import *
+from manim_ml import *
+
+import numpy as np
+
+# Helper Functions/Classes for Scene 4
+class Scene4_Helper:
+    def __init__(self, scene):
+        self.scene = scene
+
+    def create_title(self, text_str="Angle Sum Theorem", font_size=28):
+        # Create title text and position it at the top-center with a 0.5 unit buffer.
+        title = Tex(text_str, font_size=font_size, color=WHITE)
+        title.to_edge(UP, buff=0.5)
+        return title
+
+    def create_triangle(self):
+        # Define a non-equilateral triangle with vertices chosen so that the triangle remains within safe margins.
+        # Vertices chosen: A=(-3, -1, 0), B=(0, 3, 0), C=(3, -1, 0)
+        # These coordinates are well within the frame [-7,7] x [-4,4] and respect the 0.5 unit safe margins.
+        A = LEFT * 3 + DOWN
+        B = UP * 3
+        C = RIGHT * 3 + DOWN
+        triangle = Polygon(A, B, C, stroke_width=4, color=TEAL_C)
+        # Ensure triangle is centered (already roughly centered) and is at least 0.3 units below title.
+        triangle.move_to(ORIGIN)  # Center the triangle at ORIGIN.
+        return triangle
+
+    def create_angle_arc_and_label(self, vertex, point1, point2, label_str, radius=0.4, label_buff=0.3):
+        # Create an arc representing the interior angle at 'vertex' using the two rays from vertex to point1 and point2.
+        # Use the Angle class from Manim.
+        angle_arc = Angle(Line(vertex, point1), Line(vertex, point2), radius=radius, other_angle=False, color=YELLOW)
+        # Create the corresponding label.
+        angle_label = MathTex(label_str, font_size=24, color=WHITE)
+        # Position the label outside the arc with a buffer.
+        angle_label.next_to(angle_arc, UP, buff=label_buff)
+        # Validate: Ensure the label does not get closer than 0.3 units to the arc.
+        return VGroup(angle_arc, angle_label)
+
+    def create_angle_arcs(self, triangle):
+        # Extract vertices from triangle for clarity.
+        vertices = triangle.get_vertices()[:3]
+        A, B, C = vertices[0], vertices[1], vertices[2]
+        # Construct angle marker at each vertex.
+        # For vertex A, rays are from A to B and A to C.
+        arc_A = self.create_angle_arc_and_label(A, B, C, r"\alpha")
+        # For vertex B, rays from B to C and B to A.
+        arc_B = self.create_angle_arc_and_label(B, C, A, r"\beta")
+        # For vertex C, rays from C to A and C to B.
+        arc_C = self.create_angle_arc_and_label(C, A, B, r"\gamma")
+        return VGroup(arc_A, arc_B, arc_C)
+
+    def validate_spacing(self, mobject, safe_margin=0.5):
+        # Simple check to see if the mobject's bounding box remains within safe area.
+        # The scene frame: x in [-7, 7] and y in [-4, 4].
+        bbox = mobject.get_bounding_box()
+        lower_left = bbox.get_corner(DL)
+        upper_right = bbox.get_corner(UR)
+        if lower_left[0] < -7 + safe_margin or lower_left[1] < -4 + safe_margin or \
+           upper_right[0] > 7 - safe_margin or upper_right[1] > 4 - safe_margin:
+            comment = (
+                "# WARNING: The object " + mobject.__class__.__name__ +
+                " might violate safe area margins of 0.5 units."
+            )
+            self.scene.add(Text(comment, font_size=14, color=RED).to_edge(DOWN))
+        # Note: This is a rudimentary check and outputs a text object as a comment for manual review.
+
+class Scene4(VoiceoverScene, MovingCameraScene):
+    def construct(self):
+        # Initialize the custom speech service.
+        self.set_speech_service(KokoroService())
+
+        # Instantiate the helper class for this scene.
+        helper = Scene4_Helper(self)
+
+        # ---------------- Stage 1: Title and Triangle Setup ----------------
+        with self.voiceover(text="Welcome to Scene 4, where we uncover one of the foundational properties of triangles: the Angle Sum Theorem. Notice the title, 'Angle Sum Theorem,' which sets the stage for what is to come.") as tracker:
+            title = helper.create_title()
+            self.play(FadeIn(title, run_time=1.5))
+            self.wait(1)  # Buffer after title
+
+        # Create and display the triangle, ensuring it is at least 0.3 units below the title.
+        with self.voiceover(text="Here we see a carefully drawn triangle—notice a non-equilateral form that reinforces the idea that the theorem holds for all triangles. Each vertex will soon be marked with an angle indicator.") as tracker:
+            triangle = helper.create_triangle()
+            # Position triangle 0.3 units below title to satisfy spacing.
+            triangle.next_to(title, DOWN, buff=0.3)
+            self.play(Create(triangle, run_time=2))
+            helper.validate_spacing(triangle)
+            self.wait(0.5)
+
+        # ---------------- Stage 1 Continued: Angle Markers ----------------
+        with self.voiceover(text="Observe as we highlight each interior angle with a distinct arc, labeled as alpha, beta, and gamma.") as tracker:
+            angle_arcs = helper.create_angle_arcs(triangle)
+            # Animate each angle marker sequentially.
+            for angle_marker in angle_arcs:
+                self.play(FadeIn(angle_marker, run_time=1))
+            self.wait(0.5)
+
+        # Group the angle arcs for later transformation.
+        original_angle_group = angle_arcs.copy()
+        # ---------------- Stage 2: Dissecting and Rearranging Angles ----------------
+        with self.voiceover(text="Now, watch as we gently detach each angle marker from the triangle and rearrange them into a horizontal line. Notice the first angle slides to the left, followed by the second and third aligning side by side.") as tracker:
+            # Create a copy of the angle markers to animate independently.
+            rearranged_arcs = original_angle_group.copy()
+            # Remove from current positions and arrange horizontally.
+            # First, move the entire group to a temporary starting position on the left of the triangle.
+            # We ensure at least 0.3 unit gap from the triangle.
+            rearranged_arcs.arrange(RIGHT, buff=0.3)
+            rearranged_arcs.next_to(triangle, DOWN, buff=0.5)  # Positioned below the triangle within safe area.
+            self.play(Transform(original_angle_group, rearranged_arcs, run_time=1.5))
+            # Create the "180°" annotation and position it with a min 0.3 unit gap relative to the horizontal arc group.
+            angle_sum_text = MathTex(r"180^\circ", font_size=24, color=WHITE)
+            angle_sum_text.next_to(original_angle_group, RIGHT, buff=0.3)
+            self.play(Write(angle_sum_text, run_time=1))
+            self.wait(1)
+
+        # ---------------- Stage 3: Final Annotation and Emphasis ----------------
+        with self.voiceover(text="As these angles align to form a straight line, the measure is unmistakably 180 degrees. To emphasize, notice the circumscribed highlight and the final expression, alpha plus beta plus gamma equals 180 degrees.") as tracker:
+            # Use Circumscribe to highlight the assembled horizontal group (angles and 180° text).
+            full_group = VGroup(original_angle_group, angle_sum_text)
+            self.play(Circumscribe(full_group, run_time=1))
+            # Create final annotated expression and position it below the group with at least a 0.3 unit gap.
+            final_expression = MathTex(r"\alpha+\beta+\gamma=180^\circ", font_size=24, color=WHITE)
+            final_expression.next_to(full_group, DOWN, buff=0.3)
+            self.play(Write(final_expression, run_time=1.5))
+            self.wait(1)
+
+        # ---------------- Stage 4: Final Transition ----------------
+        with self.voiceover(text="Take a moment to absorb this key insight from triangle geometry. Now, let's fade out all elements and conclude the scene.") as tracker:
+            self.play(
+                FadeOut(VGroup(title, triangle, original_angle_group, angle_sum_text, final_expression), run_time=2)
+            )
+            self.wait(2)
+```
+</CODE>

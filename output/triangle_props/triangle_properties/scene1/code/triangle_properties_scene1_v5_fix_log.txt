@@ -1,0 +1,191 @@
+<THINKING>
+Error Type: Runtime (ModuleNotFoundError)
+Error Location: triangle_properties_scene1_v4.py, Line 11 – the import of "from src.utils.kokoro_voiceover import KokoroService"
+Root Cause: The sys.path insertion does not point high enough in the directory structure to include the project’s root folder where the "src" module resides. In other words, the relative path ("..", "..", "..") does not reach the directory that contains the "src" folder.
+Impact: The custom voiceover service (KokoroService) cannot be imported, so the scene’s voiceover functionality fails, and the script does not run.
+Solution:
+[FIXES_REQUIRED]
+- Fix 1: Update the sys.path insertion to correctly reference the project’s root folder.
+  - Location: At the top of the file (current sys.path.insert call)
+  - Change: Replace sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
+    with sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "..")))
+    (Adjust the number of ".." components as needed so that the "src" folder is found; in this case, going five levels up is needed.)
+</THINKING>
+<FULL_CORRECTED_CODE>
+```python
+import sys
+import os
+# Insert the project's base directory (adjusted to five levels up) into sys.path 
+# so that the 'src' module can be found.
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "..")))
+
+from manim import *
+from manim import config as global_config
+from manim_voiceover import VoiceoverScene
+from src.utils.kokoro_voiceover import KokoroService  # You MUST import like this as this is our custom voiceover service.
+
+# Plugin imports (if needed, here imported for potential future expansion)
+from manim_circuit import *
+from manim_physics import *
+from manim_chemistry import *
+from manim_dsa import *
+from manim_ml import *
+
+# Helper Functions/Classes for reusable animations and object creation
+class Scene1_Helper:
+    """
+    Helper class containing utility functions for Scene 1.
+    This class encapsulates common operations such as edge midpoint calculation, 
+    formula creation, and any other object creation functions for modularity and reusability.
+    """
+    def __init__(self, scene):
+        self.scene = scene
+
+    def get_center_of_edges(self, polygon, buff=0.3):
+        """
+        Calculate the center points of each edge in a polygon.
+        Enforces a minimum additional buffer (default 0.3 units) for label positioning.
+        """
+        vertices = polygon.get_vertices()
+        n_vertices = len(vertices)
+        edge_centers = []
+        for i in range(n_vertices):
+            v1 = vertices[i]
+            v2 = vertices[(i + 1) % n_vertices]
+            midpoint = (v1 + v2) / 2
+            # Compute normal direction for offsetting; avoid overlapping labels.
+            edge_vector = v2 - v1
+            normal = np.array([-edge_vector[1], edge_vector[0], 0])
+            normal /= np.linalg.norm(normal) if np.linalg.norm(normal) != 0 else 1
+            edge_centers.append(midpoint + normal * buff)
+        return edge_centers
+
+    def create_formula_tex(self, formula_str, color):
+        """
+        Create a MathTex object for a given formula string with a specified color.
+        Uses a custom TexTemplate if defined in the scene.
+        """
+        if hasattr(self.scene, 'tex_template'):
+            formula = MathTex(formula_str, color=color, tex_template=self.scene.tex_template, font_size=24)
+        else:
+            formula = MathTex(formula_str, color=color, font_size=24)
+        return formula
+
+class Scene1(VoiceoverScene, MovingCameraScene):
+    """
+    Scene1: "Intro Triangles"
+    This scene introduces the basic triangle properties by drawing a central triangle,
+    labeling its vertices, sides, and angles, with enforced safe area margins (0.5 units)
+    and minimum spacing of 0.3 units between objects.
+    """
+    def construct(self):
+        # Initialize speech service
+        self.set_speech_service(KokoroService())
+
+        # Instantiate helper for reusable functions
+        helper = Scene1_Helper(self)
+
+        # --- Stage 1: Scene Title ---
+        # Create a title using Tex. Font size is 28, and position to the top edge with 0.5 unit safe margin.
+        title = Tex("Intro Triangles", font_size=28, color=WHITE)
+        title.to_edge(UP, buff=0.5)
+        # Validate: Title is within safe area margins (top edge >= 0.5 units from scene edge)
+        with self.voiceover(text=(
+            "Welcome to Scene 1: Intro Triangles. In this segment, we will explore the basic structure "
+            "of one of the simplest yet most important geometric figures—a triangle."
+        )) as tracker:
+            self.play(Write(title), run_time=tracker.duration)
+            self.wait(1)  # Pause for viewer to read the title
+
+        # --- Stage 2: Drawing the Central Triangle ---
+        # Define triangle vertices ensuring the triangle lies at the center and respects safe area margins.
+        # Chosen vertices: p1=(-2, -1, 0), p2=(2, -1, 0), p3=(0, 2, 0)
+        p1 = np.array([-2, -1, 0])
+        p2 = np.array([2, -1, 0])
+        p3 = np.array([0, 2, 0])
+        # Create the triangle using a Polygon object.
+        triangle = Polygon(p1, p2, p3, color=BLUE_C)
+        # Validate: All vertices lie well within the safe frame (x in [-7, 7], y in [-4, 4])
+        with self.voiceover(text=(
+            "Notice the triangle appearing in the center of the screen. A triangle is defined as a closed three-sided polygon, "
+            "which means it has exactly three sides, three vertices, and three interior angles."
+        )) as tracker:
+            self.play(Create(triangle, run_time=2))
+            self.wait(0.5)
+
+        # --- Stage 3: Labeling the Vertices ---
+        # Create vertex labels "A", "B", and "C" with font size 24.
+        # Each label is positioned using .next_to with a buff of 0.3 units to ensure clear separation.
+        label_A = Tex("A", font_size=24, color=TEAL_C).next_to(p1, direction=UL, buff=0.3)
+        label_B = Tex("B", font_size=24, color=TEAL_C).next_to(p2, direction=DR, buff=0.3)
+        label_C = Tex("C", font_size=24, color=TEAL_C).next_to(p3, direction=UR, buff=0.3)
+        # Validate: Ensure each vertex label is at least 0.3 units away from its vertex.
+        with self.voiceover(text=(
+            "Let’s focus on its three vertices. Each vertex – labeled 'A,' 'B,' and 'C' – represents a corner of the triangle. "
+            "As each label appears one by one, think of these points as the fundamental building blocks of the triangle's structure."
+        )) as tracker:
+            self.play(Write(label_A), run_time=0.7)
+            self.wait(0.3)
+            self.play(Write(label_B), run_time=0.7)
+            self.wait(0.3)
+            self.play(Write(label_C), run_time=0.7)
+            self.wait(0.3)
+
+        # --- Stage 4: Labeling the Sides ---
+        # Calculate midpoints for each side.
+        mid_AB = (p1 + p2) / 2
+        mid_BC = (p2 + p3) / 2
+        mid_CA = (p3 + p1) / 2
+        # Create side labels with a buff of 0.3 units.
+        side_label_AB = Tex("side AB", font_size=24, color=GOLD_C).next_to(mid_AB, direction=UP, buff=0.3)
+        side_label_BC = Tex("side BC", font_size=24, color=GOLD_C).next_to(mid_BC, direction=RIGHT, buff=0.3)
+        side_label_CA = Tex("side CA", font_size=24, color=GOLD_C).next_to(mid_CA, direction=LEFT, buff=0.3)
+        # Validate: Check that labels do not overlap vertices and remain within safe margins.
+        with self.voiceover(text=(
+            "Now, observe the labels along the sides. These indicate not just the edges but also help us reference the side lengths "
+            "when we discuss measurements later."
+        )) as tracker:
+            self.play(Write(side_label_AB), run_time=0.6)
+            self.wait(0.3)
+            self.play(Write(side_label_BC), run_time=0.6)
+            self.wait(0.3)
+            self.play(Write(side_label_CA), run_time=0.6)
+            self.wait(0.3)
+
+        # --- Stage 5: Labeling the Angles with Arcs ---
+        # Create angle arcs and corresponding angle labels.
+        # For Vertex A:
+        arc_A = Arc(radius=0.3, start_angle=PI/2, angle=PI/4, color=PURPLE_C).move_to(p1 + (UP + LEFT) * 0.5)
+        angle_label_A = Tex(r"$\angle A$", font_size=24, color=PURPLE_C).next_to(arc_A, direction=UL, buff=0.3)
+        # For Vertex B:
+        arc_B = Arc(radius=0.3, start_angle=-PI/2, angle=PI/4, color=PURPLE_C).move_to(p2 + (DOWN + RIGHT) * 0.5)
+        angle_label_B = Tex(r"$\angle B$", font_size=24, color=PURPLE_C).next_to(arc_B, direction=DR, buff=0.3)
+        # For Vertex C:
+        arc_C = Arc(radius=0.3, start_angle=0, angle=PI/4, color=PURPLE_C).move_to(p3 + (UP + RIGHT) * 0.5)
+        angle_label_C = Tex(r"$\angle C$", font_size=24, color=PURPLE_C).next_to(arc_C, direction=UR, buff=0.3)
+        # Validate: Ensure arc and label placement are at least 0.3 units apart and within safe area margins.
+        with self.voiceover(text=(
+            "Additionally, we introduce angle indicators near each vertex. These arcs and angle labels, such as '∠A,' mark where the interior "
+            "angles of the triangle are located. Notice how each is carefully positioned to remain distinct and properly spaced."
+        )) as tracker:
+            self.play(Create(arc_A), run_time=0.5)
+            self.play(Write(angle_label_A), run_time=0.6)
+            self.wait(0.3)
+            self.play(Create(arc_B), run_time=0.5)
+            self.play(Write(angle_label_B), run_time=0.6)
+            self.wait(0.3)
+            self.play(Create(arc_C), run_time=0.5)
+            self.play(Write(angle_label_C), run_time=0.6)
+            self.wait(1)
+
+        # --- Grouping the Triangle and its Labels ---
+        # Group all triangle elements into a main VGroup for potential future coordinated animations.
+        triangle_group = VGroup(triangle, label_A, label_B, label_C,
+                                side_label_AB, side_label_BC, side_label_CA,
+                                arc_A, arc_B, arc_C,
+                                angle_label_A, angle_label_B, angle_label_C)
+        # Note: Ensure that the grouping maintains safe area margins and minimum 0.3 units spacing.
+        self.add(triangle_group)
+        self.wait(1)  # Final pause before scene end
+```
+</FULL_CORRECTED_CODE>
