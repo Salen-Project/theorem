@@ -94,6 +94,10 @@ KOKORO_VOICES_PATH="models/voices.bin"
 KOKORO_DEFAULT_VOICE="af"
 KOKORO_DEFAULT_SPEED="1.0"
 KOKORO_DEFAULT_LANG="en-us"
+# ElevenLabs Settings
+ELEVEN_API_KEY=""
+ELEVEN_VOICE_ID=""
+ELEVEN_MODEL_ID="eleven_monolingual_v1"
 ```
 Fill in the API keys according to the model you wanted to use.
 
@@ -301,7 +305,7 @@ DatasetDict({
 
 The FAQ should cover the most common errors you could encounter. If you see something new, report it on issues.
 
-Q: Error `src.utils.kokoro_voiceover import KokoroService  # You MUST import like this as this is our custom voiceover service. ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ModuleNotFoundError: No module named 'src'`. <br>
+Q: Error `src.utils.elevenlabs_voiceover import ElevenLabsService  # You MUST import like this. ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ModuleNotFoundError: No module named 'src'`. <br>
 A: Please run `export PYTHONPATH=$(pwd):$PYTHONPATH` when you start a new terminal. <br>
 
 Q: Error `Files not found` <br>
