@@ -25,6 +25,11 @@ def setup_model(model_name: str) -> LiteLLMWrapper:
     """Setup and return the vision model."""
     print(f"Initializing model: {model_name}")
     
+    # Default to Gemini 2.5 Flash if not specified
+    if not model_name:
+        model_name = "gemini/gemini-2.5-flash"
+        print(f"Using default model: {model_name}")
+    
     model = LiteLLMWrapper(model_name=model_name)
     
     # Test the model
@@ -191,8 +196,8 @@ Examples:
     input_group.add_argument('--batch', type=str, help='Path to directory containing images')
     
     # Model configuration
-    parser.add_argument('--model', type=str, required=True,
-                       help='Model name (e.g., gemini/gemini-1.5-pro-002)')
+    parser.add_argument('--model', type=str, default='gemini/gemini-2.5-flash',
+                       help='Model name (default: gemini/gemini-2.5-flash)')
     
     # Optional parameters
     parser.add_argument('--output', type=str, default='./ocr_output',

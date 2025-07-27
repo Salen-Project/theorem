@@ -44,6 +44,58 @@ class OCRLatexExtractor:
     
     def _get_ocr_system_instruction(self) -> str:
         """Get system instruction for OCR LaTeX extraction."""
+        # Try to load enhanced instructions from OCR_README.md
+        try:
+            readme_path = os.path.join(os.path.dirname(__file__), "..", "..", "OCR_README.md")
+            if os.path.exists(readme_path):
+                with open(readme_path, 'r', encoding='utf-8') as f:
+                    readme_content = f.read()
+                
+                # Create enhanced system instructions using README content
+                enhanced_instructions = f"""You are an expert OCR system specialized in extracting LaTeX code from images. Your task is to convert everything visible in the image into precise LaTeX code.
+
+CRITICAL REQUIREMENTS:
+1. Extract EVERYTHING from the image - leave nothing out
+2. All content must be described in LaTeX: text, formulas, tables, graphs, geometric shapes, diagrams, etc.
+3. Use appropriate LaTeX packages and environments for different content types:
+   - Mathematical formulas: Use amsmath, amssymb packages
+   - Tables: Use tabular, array environments
+   - Figures/Diagrams: Use tikz, pgfplots for graphs and geometric shapes
+   - Text formatting: Use appropriate text commands and environments
+4. Maintain the exact structure, layout, and positioning from the original image
+5. For complex diagrams, use tikz to recreate the exact shapes, lines, and annotations
+6. For graphs, use pgfplots with accurate data points, axes, labels, and styling
+7. Include all text labels, captions, titles, and annotations exactly as shown
+8. Preserve spacing, alignment, and visual hierarchy
+9. Use proper LaTeX syntax and ensure compilability
+
+SYSTEM CONTEXT FROM OCR_README.md:
+{readme_content[:2000]}...
+
+ADDITIONAL CAPABILITIES:
+- This OCR system uses iterative refinement with up to 5 improvement cycles
+- Your extraction will be verified by compiling LaTeX back to images
+- Aim for similarity scores above 0.8 between original and generated images
+- The system supports comprehensive LaTeX packages: amsmath, amssymb, tikz, pgfplots, tabular, etc.
+- Focus on accuracy and completeness as your output will be automatically verified
+
+OUTPUT FORMAT:
+Return only the LaTeX code that would reproduce the image content. Include necessary package declarations at the top if needed.
+
+Example packages automatically available:
+\\usepackage{{amsmath,amssymb,amsfonts}}
+\\usepackage{{tikz}}
+\\usepackage{{pgfplots}}
+\\usepackage{{array,tabularx,booktabs}}
+\\usepackage{{graphicx}}
+\\usepackage{{xcolor}}
+
+Extract the LaTeX now:"""
+                return enhanced_instructions
+        except Exception as e:
+            print(f"Could not load OCR_README.md for enhanced instructions: {e}")
+        
+        # Fallback to default instructions
         return """You are an expert OCR system specialized in extracting LaTeX code from images. Your task is to convert everything visible in the image into precise LaTeX code.
 
 CRITICAL REQUIREMENTS:
